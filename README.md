@@ -1,2 +1,154 @@
-# stata-joyplot
-A Stata package for creating joyplots or ridgeline plots.
+# joyplot v1.1
+
+This package provides the ability to draw joyplot or ridgeline plots in Stata. It is based on the [Joyplot Guide](https://medium.com/the-stata-guide/covid-19-visualizations-with-stata-part-8-joy-plots-ridge-line-plots-dbe022e7264d) on Medium that I released on October 2020.
+
+
+## Installation
+
+The package is available on SSC and can be installed as follows:
+```
+ssc install joyplot, replace
+```
+
+Or it can be installed from GitHub:
+
+```
+net install joyplot, from("https://raw.githubusercontent.com/asjadnaqvi/stata-joyplot/main/installation/") replace
+```
+
+The GitHub version, *might* be more recent due to bug fixes, feature updates etc.
+
+The `palettes` package is required to run this command:
+
+```
+ssc install palettes, replace
+ssc install colrspace, replace
+```
+
+If you want to make a clean figure, then it is advisable to load a clean scheme. These are several available and I personally use the following:
+
+```
+ssc install schemepack, replace
+set scheme white_tableau  
+```
+
+You can also push the scheme directly into the graph using the `scheme(schemename)` option. See the help file for details or the example below.
+
+I also prefer narrow fonts in figures with long labels. You can change this as follows:
+
+```
+graph set window fontface "Arial Narrow"
+```
+
+
+
+## Syntax
+
+The syntax is as follows:
+
+```
+joyplot y x [if] [in], over(variable) [ overlap(num) bwidth(num) color(str) alpha(num) offset(num) lwidth(num) lcolor(str) 
+                                        xlabsize(num) ylabsize(num) xlabcolor(str) ylabcolor(str) xticks(str) 
+                                        xtitle(str) ytitle(str) title(str) subtitle(str) note(str) scheme(str) ]
+```
+
+See the help file `help joyplot` for details.
+
+The most basic use is as follows:
+
+```
+joyplot y x, over(variable)
+```
+
+where `y` is the variable we want to plot, and `x` is usually the time dimension. The `over` variable splits the data into different groupings that also determines the colors. The color schemes can be modified using the `palettes(name)` option. Here any scheme from the `colorpalettes` package can be used.
+
+
+
+## Examples
+
+Set up the data:
+
+```
+clear
+set scheme white_tableau
+graph set window fontface "Arial Narrow"
+
+use "https://github.com/asjadnaqvi/The-Stata-Guide/blob/master/data/OWID_data.dta?raw=true", clear
+
+keep if group10==1
+
+keep country date new_cases
+```
+
+
+We can generate basic graphs as follows:
+
+```
+joyplot new_cases date if date > 22267, over(country)
+```
+
+<img src="/figures/joyplot1.png" height="600">
+
+
+
+```
+joyplot new_cases date if date > 22267, over(country) bwid(0.1) off(-20) overlap(10) lw(none)
+```
+
+<img src="/figures/joyplot2.png" height="600">
+
+
+```
+qui summ date if date > 22267
+
+local xmin = r(min)
+local xmax = r(max)
+
+
+joyplot new_cases date if date > 22267, over(country) overlap(8) color(CET C1) alpha(100) ///
+	lc(white) lw(0.2) xticks(`xmin'(30)`xmax') off(-30) ///
+	xtitle("Date") ytitle("Countries") ///
+	title("{fontface Arial Bold:My joyplot}") subtitle("Some more text here")  ///
+	note("Some text here", size(vsmall)) 
+```
+
+<img src="/figures/joyplot3.png" height="600">
+
+
+
+```
+qui summ date if date > 22267
+
+local xmin = r(min)
+local xmax = r(max)
+	
+joyplot new_cases date if date > 22267, over(country) overlap(8) color(CET C1) alpha(100) ///
+	lc(white) lw(0.2) xticks(`xmin'(30)`xmax') off(-30) ///
+	ylabc(white) xlabc(white) /// 
+	xtitle("Date") ytitle("Countries") ///
+	title("{fontface Arial Bold:My joyplot}") subtitle("a subtitle here", color(white)) ///
+	note("Some text here", size(vsmall)) scheme(neon)
+```
+
+where the dark background `neon` scheme is loaded from the [schemepack](https://github.com/asjadnaqvi/Stata-schemes) suite.
+
+
+<img src="/figures/joyplot4.png" height="600">
+
+## Feedback
+
+Please open an [issue](https://github.com/asjadnaqvi/stata-joyplot/issues) to report errors, feature enhancements, and/or other requests. 
+
+
+## Versions
+
+**v1.1 (08 Apr 2022)**
+- Public release. Several options and features added.
+
+**v1.0 (13 Dec 2021)**
+- Beta version.
+
+
+
+
+

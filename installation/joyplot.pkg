@@ -1,0 +1,24 @@
+v 1.0
+d {bf:JOYPLOT}: Joy plots or ridgeline plots
+d
+d
+d Requires: Stata version 15 or higher.
+d
+d KW: Stata
+d KW: graphs
+d KW: joyplot
+d KW: ridgeline plot
+d
+d This  version: 04 Apr 2022
+d First version: 05 Dec 2021
+d License: MIT
+d
+d Author: Asjad Naqvi (asjadnaqvi@gmail.com)
+d
+f joyplot.ado
+f joyplot.sthlp
+
+
+
+
+

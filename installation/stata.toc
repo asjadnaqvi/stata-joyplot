@@ -1,0 +1,10 @@
+v 1.0
+d JOYPLOT: A package for creating ridgeline plots
+d
+d Asjad Naqvi, 
+d WU Vienna/IIASA, Austria
+d
+d asjadnaqvi@gmail.com
+d https://medium.com/the-stata-guide
+d https://github.com/asjadnaqvi/Stata-schemes
+
