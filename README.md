@@ -98,6 +98,8 @@ joyplot new_cases date if date > 22267, over(country) bwid(0.1) off(-20) overlap
 <img src="/figures/joyplot2.png" height="600">
 
 
+We can also customize dates, increase the overlap of the layers, change the palette, and change the color intensity:
+
 ```
 qui summ date if date > 22267
 
@@ -115,6 +117,7 @@ joyplot new_cases date if date > 22267, over(country) overlap(8) color(CET C1) a
 <img src="/figures/joyplot3.png" height="600">
 
 
+Next we modify the scheme and make sure the colors are passed correctly. We use `neon` from [schemepack](https://github.com/asjadnaqvi/Stata-schemes) which has a black background:
 
 ```
 qui summ date if date > 22267
@@ -129,9 +132,6 @@ joyplot new_cases date if date > 22267, over(country) overlap(8) color(CET C1) a
 	title("{fontface Arial Bold:My joyplot}") subtitle("a subtitle here", color(white)) ///
 	note("Some text here", size(vsmall)) scheme(neon)
 ```
-
-where the dark background `neon` scheme is loaded from the [schemepack](https://github.com/asjadnaqvi/Stata-schemes) suite.
-
 
 <img src="/figures/joyplot4.png" height="600">
 
