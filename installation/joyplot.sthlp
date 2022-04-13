@@ -32,7 +32,7 @@ The options are described as follows:
 {p2coldent : {opt over(group variable)}}This is the group variable that defines the joyplot layers.{p_end}
 
 {p2coldent : {opt bwid:th(value)}}A higher bandwidth value will result in higher smoothing. The default value is 0.05. 
-Trying incrementing around this value in small steps to avoid over smoothing.{p_end}
+Trying incrementing this value in small steps to avoid over smoothing.{p_end}
 
 {p2coldent : {opt overlap(value)}}A higher value increases the overlap, and the height of the joyplots. The default value is 6.{p_end}
 
