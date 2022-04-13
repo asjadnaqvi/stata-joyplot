@@ -187,6 +187,22 @@ joyplot new_cases date if date > 22267, over(country) overlap(8) color(CET C1) a
 
 <img src="/figures/joyplot5.png" height="600">
 
+
+### The Joy Division look, since this plots get their name from the band:
+
+qui summ date if date > 22420
+
+local xmin = r(min)
+local xmax = r(max)
+	
+joyplot new_cases date if date > 22420, over(country) overlap(8) color(white) alpha(100) bwid(0.1) ///
+	lc(black) lw(0.2) xticks(`xmin'(30)`xmax') off(-30) ///
+	ylabc(white) xlabc(white) /// 
+	xtitle("") ytitle("") ///
+	title("{fontface Arial Bold:The Joy division look}") scheme(neon)
+
+<img src="/figures/joyplot6.png" height="600">
+
 ## Feedback
 
 Please open an [issue](https://github.com/asjadnaqvi/stata-joyplot/issues) to report errors, feature enhancements, and/or other requests. 
