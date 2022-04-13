@@ -1,5 +1,6 @@
-*! Joyplot v1.1 Naqvi 7.Apr.2022
-* v1.0 13.Dec.2021
+*! Joyplot v1.2 Naqvi 13.Apr.2022: xlabel angle + local normalization
+* v1.1 07.Apr.2022: options added
+* v1.0 13.Dec.2021: first release
 
 **********************************
 * Step-by-step guide on Medium   *
@@ -19,9 +20,10 @@ program joyplot, sortpreserve
 version 15
  
 	syntax varlist(min=2 max=2 numeric) [if] [in], over(varname) [overlap(real 6) BWIDth(real 0.05) color(string) alpha(real 80)] ///
-		[ LColor(string) LWidth(string) XLABSize(real 1.7) YLABSize(real 1.7) OFFset(real 0) 		]  ///
-		[ xticks(string) xtitle(string) ytitle(string) title(string) subtitle(string) note(string) 	] ///
-		[ XLABColor(string) YLABColor(string) scheme(string) allopt graphopts(string asis) * 		] 
+		[ LColor(string) LWidth(string) XLABSize(real 1.7) YLABSize(real 1.7) OFFset(real 0) NORMGlobal lines	]  ///
+		[ xticks(string) xtitle(string) ytitle(string) xangle(string) XLABColor(string) YLABColor(string)		]  ///
+		[ title(string) subtitle(string) note(string)  scheme(string)											]  ///
+		[  allopt graphopts(string asis) * 																		] 
 		
 		
 	// check dependencies
@@ -41,7 +43,7 @@ preserve
 	
 	sort `over' `xvar' 
 	cap drop _fillin
-	fillin `over' `xvar' 
+	fillin `over' `xvar' // complete the series for the labels
 	
 	
 
@@ -50,10 +52,8 @@ preserve
 	cap drop if _fillin==1
 	cap drop _fillin
 
-	replace `myvar' = . if `myvar' < 0
+	replace `myvar' = . if `myvar' < 0   // TODO: see how to deal with negative values 
 	
-	tempvar norm
-	gen double `norm' = .
 	
 	cap confirm numeric var `over'
 		if _rc!=0 {
@@ -77,7 +77,7 @@ preserve
 	}
 	
 	if "`lwidth'" == "" {
-		local linew  thin
+		local linew  0.1
 	}
 	else {
 		local linew `lwidth'
@@ -106,14 +106,43 @@ preserve
 		local ycolor `ylabcolor'
 	}	
 	
-
-	levelsof `over', local(lvls)
+	if "`xangle'" == "" {
+		local xang  vertical
+	}
+	else {
+		local xang `xangle'
+	}		
 	
-	foreach x of local lvls {
-		 summ `myvar' if `over'==`x'
-		 replace `norm' = `myvar' / r(max) if `over'==`x'
+	
+	// normalization 
+	
+
+
+	tempvar norm
+	gen double `norm' = .	
+	
+	if "`normglobal'" != ""   {
+	
+		levelsof `over', local(lvls)
+		
+		foreach x of local lvls {
+			 summ `myvar' 
+			 replace `norm' = `myvar' / r(max) if `over'==`x'
+		}
+	}	
+		
+	else  {
+	
+		levelsof `over', local(lvls)
+		
+		foreach x of local lvls {
+			 summ `myvar' if `over'==`x'
+			 replace `norm' = `myvar' / r(max) if `over'==`x'
+		}
 	}
 
+
+	
 
 	tempvar tag xpoint ypoint y0
 	
@@ -145,10 +174,16 @@ preserve
 	 gen `ytop`newx'' = `y`newx'' + `ybot`newx''
 	
 	
+	if "`lines'" != "" {
+		colorpalette `mycolor', n(`items') nograph
+		local mygraph `mygraph' line `ytop`newx'' `xvar', lc("`r(p`newx')'") lw(`linew') ||
+	}
+	else {
 	colorpalette `mycolor', n(`items') nograph
-        local mygraph `mygraph' rarea  `ytop`newx'' `ybot`newx'' `xvar'  , fc("`r(p`newx')'%`alpha'") fi(100) lc(`linec') lw(`linew') || 
+        local mygraph `mygraph' rarea  `ytop`newx'' `ybot`newx'' `xvar', fc("`r(p`newx')'%`alpha'") fi(100) lc(`linec') lw(`linew') || 
+	}	
 		
-		qui replace `ypoint' = (`ybot`newx'' + 0.01) if `xpoint'!=. & `over'==`newx'	
+	qui replace `ypoint' = (`ybot`newx'' + 0.01) if `xpoint'!=. & `over'==`newx'	
 }
 	
 	
@@ -159,7 +194,7 @@ preserve
 	twoway  `mygraph'  ///
 	(scatter `ypoint' `xpoint', mlabcolor(`ycolor') msize(zero) msymbol(point) mlabel(`over') mlabsize(`ylabsize') mcolor(none)) ///
 	, ///
-	xlabel(`xti', labcolor(`xcolor') nogrid labsize(`xlabsize') angle(vertical)) ///
+	xlabel(`xti', labcolor(`xcolor') nogrid labsize(`xlabsize') angle(`xang')) ///
 	ylabel(, nolabels noticks nogrid) yscale(noline)   ///
 	legend(off) title(`title') subtitle(`subtitle') note(`note') xtitle(`xtitle') ytitle(`ytitle') scheme(`scheme')
 
