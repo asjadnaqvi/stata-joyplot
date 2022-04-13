@@ -31,6 +31,9 @@ The options are described as follows:
 
 {p2coldent : {opt over(group variable)}}This is the group variable that defines the joyplot layers.{p_end}
 
+{p2coldent : {opt bwid:th(value)}}A higher bandwidth value will result in higher smoothing. The default value is 0.05. 
+Trying incrementing around this value in small steps to avoid over smoothing.{p_end}
+
 {p2coldent : {opt overlap(value)}}A higher value increases the overlap, and the height of the joyplots. The default value is 6.{p_end}
 
 {p2coldent : {opt color(string)}}Color name is any named scheme defined in the {stata help colorpalette:colorpalette} package. Default is {stata colorpalette viridis:{it:viridis}}. Here one can also pass one single colors, for example, {it:color(black)}.{p_end}
