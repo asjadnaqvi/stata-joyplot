@@ -196,8 +196,8 @@ qui summ date if date > 22425
 local xmin = r(min)
 local xmax = r(max)
 	
-joyplot new_cases date if date > 22425, over(country) overlap(8) color(white) alpha(100) bwid(0.1) ///
-	lc(black) lw(0.2) xticks(`xmin' `xmax') off(+20) ///
+joyplot new_cases date if date > 22425, over(country) overlap(8) color(black) alpha(100) bwid(0.1) ///
+	lc(white) lw(0.2) xticks(`xmin' `xmax') off(+20) ///
 	ylabc(none) xlabc(none) xangle(0) /// 
 	xtitle("") ytitle("") ///
 	title("{fontface Arial Bold:The Joy Division look}") scheme(neon)

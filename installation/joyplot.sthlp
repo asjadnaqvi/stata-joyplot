@@ -51,7 +51,7 @@ Instead define the line color using the {cmd:color()} option. The option {cmdab:
 
 {p2coldent : {opt lc:olor(string)}}The outline color of the area fills. Default is {it:white}.{p_end}
 
-{p2coldent : {opt lw:idth(value)}}The outline width of the area fills. Default is {it:0.1}.{p_end}
+{p2coldent : {opt lw:idth(value)}}The outline width of the area fills. Default is {it:0.15}.{p_end}
 
 {p2coldent : {opt offset(value)}}This option is used for offseting the labels on the y-axis. Default is {it:0}. A higher offsetting can be achieved by providing a negative number, e.g. -20.{p_end}
 
@@ -141,6 +141,18 @@ joyplot new_cases date if date > 22267, over(country) overlap(8) color(CET C1) a
 	title("{fontface Arial Bold:My joyplot}") subtitle("a subtitle here", color(white)) ///
 	note("Some text here", size(vsmall)) scheme(neon)
 
+- {it:The Joy Division look:}
+
+qui summ date if date > 22425
+
+local xmin = r(min)
+local xmax = r(max)
+	
+joyplot new_cases date if date > 22425, over(country) overlap(8) color(black) alpha(100) bwid(0.1) ///
+	lc(white) lw(0.2) xticks(`xmin' `xmax') off(+20) ///
+	ylabc(none) xlabc(none) xangle(0) /// 
+	xtitle("") ytitle("") ///
+	title("{fontface Arial Bold:The Joy Division look}") scheme(neon)
 
 
 {title:Version history}

@@ -1,4 +1,5 @@
-*! Joyplot v1.2 Naqvi 13.Apr.2022: xlabel angle + local normalization
+*! Joyplot v1.2 Naqvi 13.Apr.2022: 
+*! xlabel angle, local normalization, lines only option added
 * v1.1 07.Apr.2022: options added
 * v1.0 13.Dec.2021: first release
 
@@ -77,7 +78,7 @@ preserve
 	}
 	
 	if "`lwidth'" == "" {
-		local linew  0.1
+		local linew  0.15
 	}
 	else {
 		local linew `lwidth'
@@ -154,6 +155,8 @@ preserve
 	 gen `ypoint' = .
 
 
+	local mygraph
+	
 	
 	levelsof `over', local(lvls)
 	local items = `r(r)'
@@ -180,7 +183,8 @@ preserve
 	}
 	else {
 	colorpalette `mycolor', n(`items') nograph
-        local mygraph `mygraph' rarea  `ytop`newx'' `ybot`newx'' `xvar', fc("`r(p`newx')'%`alpha'") fi(100) lc(`linec') lw(`linew') || 
+        local mygraph `mygraph' rarea  `ytop`newx'' `ybot`newx'' `xvar', fc("`r(p`newx')'%`alpha'") fi(100) lw(none) ||  line `ytop`newx'' `xvar', lc(`linec') lw(`linew') || 
+		
 	}	
 		
 	qui replace `ypoint' = (`ybot`newx'' + 0.01) if `xpoint'!=. & `over'==`newx'	
@@ -191,8 +195,9 @@ preserve
 	local x1 = r(min) - 20 + `offset'
 	local x2 = r(max)
 	
-	twoway  `mygraph'  ///
-	(scatter `ypoint' `xpoint', mlabcolor(`ycolor') msize(zero) msymbol(point) mlabel(`over') mlabsize(`ylabsize') mcolor(none)) ///
+	twoway  ///
+		`mygraph'  ///
+		(scatter `ypoint' `xpoint', mlabcolor(`ycolor') msize(zero) msymbol(point) mlabel(`over') mlabsize(`ylabsize') mcolor(none)) ///
 	, ///
 	xlabel(`xti', labcolor(`xcolor') nogrid labsize(`xlabsize') angle(`xang')) ///
 	ylabel(, nolabels noticks nogrid) yscale(noline)   ///
