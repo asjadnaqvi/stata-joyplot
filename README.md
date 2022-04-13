@@ -216,7 +216,7 @@ Please open an [issue](https://github.com/asjadnaqvi/stata-joyplot/issues) to re
 - X-axis angle option added.
 - Global normalization option added.
 - Draw lines only option added.
-- Minor fixes to syntax and defaults.
+- Major fixes to syntax, defaults values, and how lines and areas are drawn.
 
 **v1.1 (08 Apr 2022)**
 - Public release. Several options and features added.
