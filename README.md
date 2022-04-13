@@ -190,6 +190,7 @@ joyplot new_cases date if date > 22267, over(country) overlap(8) color(CET C1) a
 
 ### The Joy Division look, since this plots get their name from the band:
 
+```
 qui summ date if date > 22420
 
 local xmin = r(min)
@@ -200,6 +201,7 @@ joyplot new_cases date if date > 22420, over(country) overlap(8) color(white) al
 	ylabc(white) xlabc(white) /// 
 	xtitle("") ytitle("") ///
 	title("{fontface Arial Bold:The Joy division look}") scheme(neon)
+```
 
 <img src="/figures/joyplot6.png" height="600">
 
