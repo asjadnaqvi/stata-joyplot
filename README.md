@@ -5,6 +5,8 @@ This package provides the ability to draw joyplot or ridgeline plots in Stata. I
 
 ## Installation
 
+The package can be installed via SSC or GitHub. The GitHub version, *might* be more recent due to bug fixes, feature updates etc, and *may* contain syntax improvements and changes in *default* values. See version numbers below. Eventually the GitHub version is published on SSC.
+
 The package (**v1.1**) is available on SSC and can be installed as follows:
 ```
 ssc install joyplot, replace
@@ -16,7 +18,6 @@ Or it can be installed from GitHub (**v1.2**):
 net install joyplot, from("https://raw.githubusercontent.com/asjadnaqvi/stata-joyplot/main/installation/") replace
 ```
 
-The GitHub version, *might* be more recent due to bug fixes, feature updates etc, and *may* contain syntax improvements and changes in *default* values. See version numbers above. Eventually GitHub versions are published on SSC.
 
 The `palettes` package is required to run this command:
 
