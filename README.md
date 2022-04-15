@@ -224,8 +224,12 @@ Please open an [issue](https://github.com/asjadnaqvi/stata-joyplot/issues) to re
 
 ## Versions
 
+**v1.21 (15 Apr 2022)**
+- y label position option added. It can now be position on the left or right.
+- xsize and ysize options added to change the graph dimensions.
+
 **v1.2 (14 Apr 2022)**
-- X-axis angle option added.
+- x-axis angle option added.
 - Global normalization option added.
 - Draw lines only option added.
 - Major fixes to syntax, defaults values, and how lines and areas are drawn.
