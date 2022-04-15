@@ -12,7 +12,7 @@ The package (**v1.1**) is available on SSC and can be installed as follows:
 ssc install joyplot, replace
 ```
 
-Or it can be installed from GitHub (**v1.2**):
+Or it can be installed from GitHub (**v1.21**):
 
 ```
 net install joyplot, from("https://raw.githubusercontent.com/asjadnaqvi/stata-joyplot/main/installation/") replace
@@ -45,13 +45,14 @@ graph set window fontface "Arial Narrow"
 
 ## Syntax
 
-The syntax for v1.2 is as follows:
+The syntax for v1.21 is as follows:
 
 ```
 joyplot y x [if] [in], over(variable) [ overlap(num) bwidth(num) color(str) alpha(num) offset(num) normglobal lines 
-                                        lwidth(num) lcolor(str) {cmdab:xangle(str) xlabsize(num) ylabsize(num) xlabcolor(str) ylabcolor(str) xticks({it
-                                        xtitle(str) ytitle(str) title(str) subtitle(str) note(str) scheme(str) ]
-
+                                        lwidth(num) lcolor(str) {cmdab:xangle(str) xlabsize(num) ylabsize(num) 
+                                        xlabcolor(str) ylabcolor(str) xticks(str) ylabposition(str)
+                                        xtitle(str) ytitle(str) xsize(num) ysize(num)
+                                        title(str) subtitle(str) note(str) scheme(str) ]
 ```
 
 See the help file `help joyplot` for details.
@@ -118,7 +119,17 @@ joyplot new_cases date if date > 22267, over(country) lines lw(0.2) color(black)
 
 <img src="/figures/joyplot1_4.png" height="600">
 
+```
+joyplot new_cases date if date > 22267, over(country) lines lw(0.2) ylabpos(right)
+```
 
+<img src="/figures/joyplot1_5.png" height="600">
+
+```
+joyplot new_cases date if date > 22267, over(country)  lw(0.2) ylabpos(right) xsize(5) ysize(7)
+```
+
+<img src="/figures/joyplot1_6.png" height="600">
 
 ### Global normalization
 

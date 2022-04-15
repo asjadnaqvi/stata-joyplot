@@ -1,6 +1,9 @@
-*! Joyplot v1.2 Naqvi 13.Apr.2022: 
-*! xlabel angle, local normalization, lines only option added
-* v1.1 07.Apr.2022: options added
+*! Joyplot v1.21 Naqvi 15.Apr.2022: 
+*! xsize/ysize added. ylabels on right option added.
+*
+*
+* v1.2 13.Apr.2022: xlabel angle, local normalization, lines only option added
+* v1.1 07.Apr.2022: several options added
 * v1.0 13.Dec.2021: first release
 
 **********************************
@@ -21,9 +24,9 @@ program joyplot, sortpreserve
 version 15
  
 	syntax varlist(min=2 max=2 numeric) [if] [in], over(varname) [overlap(real 6) BWIDth(real 0.05) color(string) alpha(real 80)] ///
-		[ LColor(string) LWidth(string) XLABSize(real 1.7) YLABSize(real 1.7) OFFset(real 0) NORMGlobal lines	]  ///
+		[ LColor(string) LWidth(string) XLABSize(real 1.7) YLABSize(real 1.7) YLABPOSition(string) OFFset(real 0) NORMGlobal lines	]  ///
 		[ xticks(string) xtitle(string) ytitle(string) xangle(string) XLABColor(string) YLABColor(string)		]  ///
-		[ title(string) subtitle(string) note(string)  scheme(string)											]  ///
+		[ title(string) subtitle(string) note(string)  scheme(string) xsize(real 5) ysize(real 4)				]  ///
 		[  allopt graphopts(string asis) * 																		] 
 		
 		
@@ -86,7 +89,7 @@ preserve
 	
 	if "`xticks'" == "" {
 		summ `xvar'
-		local gap = round((`r(max)' - `r(min)') / 10)
+		local gap = round((`r(max)' - `r(min)') / 6)
 		local xti  `r(min)'(`gap')`r(max)'
 	}
 	else {
@@ -114,6 +117,8 @@ preserve
 		local xang `xangle'
 	}		
 	
+
+
 	
 	// normalization 
 	
@@ -143,16 +148,26 @@ preserve
 	}
 
 
-	
+	// y labels 
 
 	tempvar tag xpoint ypoint y0
 	
-	 gen `y0' = 0
+	gen `xpoint' = .
+	gen `y0' = 0
 	
 	egen `tag' = tag(`over')
-	qui summ `xvar'
-	 gen `xpoint' = r(min) - 20 + `offset' if `tag'==1
-	 gen `ypoint' = .
+	
+	
+	if ("`ylabposition'" == "") | ("`ylabposition'" == "left") {
+		qui summ `xvar'
+		replace `xpoint' = r(min) - 30 + `offset' if `tag'==1
+	}
+	if ("`ylabposition'" == "right")  {	
+		qui summ `xvar'
+		replace `xpoint' = r(max) + 5 + `offset' if `tag'==1
+	}
+	
+	gen `ypoint' = .
 
 
 	local mygraph
@@ -191,17 +206,27 @@ preserve
 }
 	
 	
-	summ `xvar' 
-	local x1 = r(min) - 20 + `offset'
-	local x2 = r(max)
+	if "`ylabposition'" == "" | "`ylabposition'" == "left" {
+		summ `xvar'
+		local x1 = r(min) - 40 + `offset'
+		local x2 = r(max)
+	}
+	
+	if "`ylabposition'" == "right"  {
+		summ `xvar'
+		local x1 = r(min) 
+		local x2 = r(max) + 40 + `offset'
+	
+	}
 	
 	twoway  ///
 		`mygraph'  ///
 		(scatter `ypoint' `xpoint', mlabcolor(`ycolor') msize(zero) msymbol(point) mlabel(`over') mlabsize(`ylabsize') mcolor(none)) ///
-	, ///
-	xlabel(`xti', labcolor(`xcolor') nogrid labsize(`xlabsize') angle(`xang')) ///
-	ylabel(, nolabels noticks nogrid) yscale(noline)   ///
-	legend(off) title(`title') subtitle(`subtitle') note(`note') xtitle(`xtitle') ytitle(`ytitle') scheme(`scheme')
+		, ///
+		xlabel(`xti', labcolor(`xcolor') nogrid labsize(`xlabsize') angle(`xang')) xscale(range(`x1' `x2')) ///
+		ylabel(, nolabels noticks nogrid) yscale(noline) ///
+		legend(off) title(`title') subtitle(`subtitle') note(`note') xtitle(`xtitle') ytitle(`ytitle')  ///
+		xsize(`xsize') ysize(`ysize')  scheme(`scheme')
 
 restore			
 	}

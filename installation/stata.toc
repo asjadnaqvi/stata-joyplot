@@ -1,4 +1,4 @@
-v 1.2
+v 1.21
 d JOYPLOT: A package for creating ridgeline plots
 d Asjad Naqvi, 
 d WU Vienna/IIASA, Austria
