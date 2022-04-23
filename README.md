@@ -1,3 +1,6 @@
+![issues]https://img.shields.io/github/issues/asjadnaqvi/stata-joyplot ![lisence]https://img.shields.io/github/license/asjadnaqvi/stata-joyplot
+
+
 # joyplot v1.3
 
 This package provides the ability to draw joyplot or ridgeline plots in Stata. It is based on the [Joyplot Guide](https://medium.com/the-stata-guide/covid-19-visualizations-with-stata-part-8-joy-plots-ridge-line-plots-dbe022e7264d) that I released in October 2020.
