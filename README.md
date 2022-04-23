@@ -1,4 +1,4 @@
-# joyplot v1.21
+# joyplot v1.3
 
 This package provides the ability to draw joyplot or ridgeline plots in Stata. It is based on the [Joyplot Guide](https://medium.com/the-stata-guide/covid-19-visualizations-with-stata-part-8-joy-plots-ridge-line-plots-dbe022e7264d) that I released in October 2020.
 
@@ -7,12 +7,12 @@ This package provides the ability to draw joyplot or ridgeline plots in Stata. I
 
 The package can be installed via SSC or GitHub. The GitHub version, *might* be more recent due to bug fixes, feature updates etc, and *may* contain syntax improvements and changes in *default* values. See version numbers below. Eventually the GitHub version is published on SSC.
 
-The package (**v1.1**) is available on SSC and can be installed as follows:
+The package (**v1.2**) is available on SSC and can be installed as follows:
 ```
 ssc install joyplot, replace
 ```
 
-Or it can be installed from GitHub (**v1.21**):
+Or it can be installed from GitHub (**v1.3**):
 
 ```
 net install joyplot, from("https://raw.githubusercontent.com/asjadnaqvi/stata-joyplot/main/installation/") replace
@@ -25,6 +25,8 @@ The `palettes` package is required to run this command:
 ssc install palettes, replace
 ssc install colrspace, replace
 ```
+
+Even if you have the package installed, make sure that it is updated `ado update, update`.
 
 If you want to make a clean figure, then it is advisable to load a clean scheme. These are several available and I personally use the following:
 
@@ -45,14 +47,15 @@ graph set window fontface "Arial Narrow"
 
 ## Syntax
 
-The syntax for v1.21 is as follows:
+The syntax for v1.3 is as follows:
 
 ```
-joyplot y x [if] [in], over(variable) [ overlap(num) bwidth(num) color(str) alpha(num) offset(num) normglobal lines 
-                                        lwidth(num) lcolor(str) {cmdab:xangle(str) xlabsize(num) ylabsize(num) 
-                                        xlabcolor(str) ylabcolor(str) xticks(str) ylabposition(str)
-                                        xtitle(str) ytitle(str) xsize(num) ysize(num)
-                                        title(str) subtitle(str) note(str) scheme(str) ]
+joyplot y [x] [if] [in], over(variable) [ overlap(num) bwidth(num) color(str) alpha(num) normglobal lines 
+                                        lwidth(num) lcolor(str) 
+										xangle(str) xlabsize(num) xlabcolor(str) xticks(str)
+										ylabsize(num) ylabcolor(str) ylabposition(str) offset(num) 
+										yline(str) ylinecolor(str) ylinewith(str) ylinepattern(str)
+                                        xtitle(str) ytitle(str) title(str) subtitle(str) note(str) xsize(num) ysize(num) scheme(str) ]
 ```
 
 See the help file `help joyplot` for details.
@@ -60,10 +63,16 @@ See the help file `help joyplot` for details.
 The most basic use is as follows:
 
 ```
+joyplot y, over(variable)
+```
+
+or
+
+```
 joyplot y x, over(variable)
 ```
 
-where `y` is the variable we want to plot, and `x` is usually the time dimension. The `over` variable splits the data into different groupings that also determines the colors. The color schemes can be modified using the `palettes(name)` option. Here any scheme from the `colorpalettes` package can be used.
+where `y` is the variable we want to plot, and `x` is usually the time dimension. The `over` variable splits the data into different groupings that also determines the colors. The color schemes can be modified using the `color()` option. Here any scheme from the `colorpalettes` package can be used.
 
 
 
@@ -89,74 +98,94 @@ keep country date new_cases
 We can generate basic graphs as follows:
 
 ```
-joyplot new_cases date if date > 22267, over(country)
+joyplot new_cases date if date > 22460, over(country) 
 ```
 
 <img src="/figures/joyplot1.png" height="600">
 
 
 ```
-joyplot new_cases date if date > 22267, over(country) lc(black) color(white) alpha(100)
+joyplot new_cases date if date > 22460, over(country) yline
 ```
 
 <img src="/figures/joyplot1_1.png" height="600">
 
+
 ```
-joyplot new_cases date if date > 22267, over(country) lc(white) color(black) alpha(50) lw(0.05)
+joyplot new_cases date if date > 22460, over(country) lc(black) color(white) alpha(100)
 ```
 
 <img src="/figures/joyplot1_2.png" height="600">
 
 ```
-joyplot new_cases date if date > 22267, over(country) lines lw(0.2)
+joyplot new_cases date if date > 22460, over(country) lc(white) color(black) alpha(50) lw(0.05)
 ```
 
 <img src="/figures/joyplot1_3.png" height="600">
 
 ```
-joyplot new_cases date if date > 22267, over(country) lines lw(0.2) color(black)
+joyplot new_cases date if date > 22460, over(country) lines lw(0.2)
 ```
 
 <img src="/figures/joyplot1_4.png" height="600">
 
 ```
-joyplot new_cases date if date > 22267, over(country) lines lw(0.2) ylabpos(right)
+joyplot new_cases date if date > 22460, over(country) lines lw(0.2) color(black)
 ```
 
 <img src="/figures/joyplot1_5.png" height="600">
 
 ```
-joyplot new_cases date if date > 22267, over(country)  lw(0.2) ylabpos(right) xsize(5) ysize(7)
+joyplot new_cases date if date > 22460, over(country) lines lw(0.2) color(black)
 ```
 
 <img src="/figures/joyplot1_6.png" height="600">
 
+```
+joyplot new_cases date if date > 22460, over(country) lines lw(0.2) ylabpos(right)
+```
+
+<img src="/figures/joyplot1_7.png" height="600">
+
+
+```
+joyplot new_cases date if date > 22460, over(country)  lw(0.2) ylabpos(right) xsize(5) ysize(7)
+```
+
+<img src="/figures/joyplot1_8.png" height="600">
+
 ### Global normalization
 
 ```
-joyplot new_cases date if date > 22267, over(country) normg
+joyplot new_cases date if date > 22460, over(country) normg
 ```
 
 <img src="/figures/joyplot2.png" height="600">
 
 ```
-joyplot new_cases date if date > 22267, over(country) normg overlap(15) xangle(45)
+joyplot new_cases date if date > 22460, over(country) normg overlap(15) xangle(45)
 ```
 
 <img src="/figures/joyplot2_1.png" height="600">
 
 ```
-joyplot new_cases date if date > 22267, over(country) normg overlap(15) xangle(45) lines
+joyplot new_cases date if date > 22460, over(country) normg overlap(15) xangle(45) lines
 ```
 
 <img src="/figures/joyplot2_2.png" height="600">
+
+```
+joyplot new_cases date if date > 22460, over(country) bwid(0.1) off(-20) overlap(10) lw(none) 
+```
+
+<img src="/figures/joyplot2_3.png" height="600">
 
 
 ### Additional options
 
 
 ```
-joyplot new_cases date if date > 22267, over(country) bwid(0.1) off(-20) overlap(10) lw(none) 
+joyplot new_cases date if date > 22460, over(country) bwid(0.1) off(-20) overlap(10) lw(none) 
 ```
 
 <img src="/figures/joyplot3.png" height="600">
@@ -165,14 +194,14 @@ joyplot new_cases date if date > 22267, over(country) bwid(0.1) off(-20) overlap
 We can also customize dates, increase the overlap of the layers, change the palette, and change the color intensity:
 
 ```
-qui summ date if date > 22267
+qui summ date if date > 22460
 
 local xmin = r(min)
 local xmax = r(max)
 
 
-joyplot new_cases date if date > 22267, over(country) overlap(8) color(CET C1) alpha(100) ///
-	lc(white) lw(0.2) xticks(`xmin'(30)`xmax') off(-30) ///
+joyplot new_cases date if date > 22460, over(country) overlap(8) color(CET C1) alpha(100) ///
+	lc(white) lw(0.2) xticks(`xmin'(60)`xmax') off(-30) ///
 	xtitle("Date") ytitle("Countries") ///
 	title("{fontface Arial Bold:My joyplot}") subtitle("Some more text here")  ///
 	note("Some text here", size(vsmall)) 
@@ -184,12 +213,12 @@ joyplot new_cases date if date > 22267, over(country) overlap(8) color(CET C1) a
 Next we modify the scheme and make sure the colors are passed correctly. We use `neon` from [schemepack](https://github.com/asjadnaqvi/Stata-schemes) which has a black background:
 
 ```
-qui summ date if date > 22267
+qui summ date if date > 22460
 
 local xmin = r(min)
 local xmax = r(max)
 	
-joyplot new_cases date if date > 22267, over(country) overlap(8) color(CET C1) alpha(90) ///
+joyplot new_cases date if date > 22460, over(country) overlap(8) color(CET C1) alpha(90) ///
 	lc(black) lw(0.1) xticks(`xmin'(60)`xmax') off(-30) ///
 	ylabc(white) xlabc(white) /// 
 	xtitle("Date") ytitle("Countries") ///
@@ -216,6 +245,39 @@ joyplot new_cases date if date > 22425, over(country) overlap(8) color(black) al
 ```
 
 <img src="/figures/joyplot6.png" height="600">
+
+
+### Stacked densities (v1.3)
+
+Load the data that contains average USA state-level monthly temperatures for the period 1991-2020:
+
+```
+use "https://github.com/asjadnaqvi/The-Stata-Guide/blob/master/data/us_meantemp.dta?raw=true", clear
+```
+
+
+```
+joyplot meantemp, over(month)
+```
+
+<img src="/figures/joyplot7_1.png" height="600">
+
+```
+joyplot meantemp, over(month)  yline ylw(0.2) ylc(blue) ylp(dot)
+```
+
+<img src="/figures/joyplot7_2.png" height="600">
+
+```
+joyplot meantemp, over(month) bwid(1.5) xlabs(3) ylabs(3) overlap(3) yline ///
+	ytitle("Month") xtitle("degrees Centigrade") ///
+	title("Mean average temperature in the USA") subtitle("2009-2020 average") ///
+	note("Source: World Bank Climate Change Knowledge Portal (CCKP).", size(vsmall)) ///
+		xsize(3) ysize(5)
+```
+
+<img src="/figures/joyplot7_3.png" height="600">
+
 
 ## Feedback
 
