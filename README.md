@@ -1,4 +1,4 @@
-![issues]https://img.shields.io/github/issues/asjadnaqvi/stata-joyplot ![lisence]https://img.shields.io/github/license/asjadnaqvi/stata-joyplot
+![issues](https://img.shields.io/github/issues/asjadnaqvi/stata-joyplot) ![lisence](https://img.shields.io/github/license/asjadnaqvi/stata-joyplot) ![Twitter](https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Fgithub.com%2Fasjadnaqvi%2Fstata-joyplot)
 
 
 # joyplot v1.3
