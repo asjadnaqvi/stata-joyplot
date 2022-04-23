@@ -286,6 +286,11 @@ Please open an [issue](https://github.com/asjadnaqvi/stata-joyplot/issues) to re
 
 ## Versions
 
+**v1.3 (24 Apr 2022)**
+- option to add y-axis lines.
+- the syntax is now allows for variable level densities.
+- label placement optimized.
+
 **v1.21 (15 Apr 2022)**
 - y label position option added. It can now be position on the left or right.
 - xsize and ysize options added to change the graph dimensions.
