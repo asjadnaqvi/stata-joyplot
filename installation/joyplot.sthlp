@@ -1,13 +1,12 @@
 {smcl}
-{* 24April2022}{...}
+{* 26April2022}{...}
 {hi:help joyplot}{...}
-{right:{browse "https://github.com/asjadnaqvi/stata-joyplot":joyplot v1.3 (GitHub)}}
+{right:{browse "https://github.com/asjadnaqvi/stata-joyplot":joyplot v1.4 (GitHub)}}
 
 {hline}
 
 {title:joyplot}: A Stata package for ridgeline plots. 
 
-{p 4 4 2}
 The command is based on the following guide on Medium: {browse "https://medium.com/the-stata-guide/covid-19-visualizations-with-stata-part-8-joy-plots-ridge-line-plots-dbe022e7264d":Ridgeline plots (Joy plots)}.
 
 
@@ -18,8 +17,9 @@ The command is based on the following guide on Medium: {browse "https://medium.c
 					{cmdab:lw:idth}({it:num}) {cmdab:lc:olor}({it:str}) {cmdab:xangle}({it:str}) {cmdab:xlabs:ize}({it:num}) {cmdab:ylabs:ize}({it:num}) 
 					{cmdab:yl:ine} {cmdab:ylc:olor}({it:str}) {cmdab:ylw:idth}({it:str}) {cmdab:ylp:attern}({it:str})
 					{cmdab:xlabc:olor}({it:str}) {cmdab:ylabc:olor}({it:str}) {cmdab:ylabpos:ition}({it:str}) {cmd:xticks}({it:str}) 
-					{cmd:xtitle}({it:str}) {cmd:ytitle}({it:str}) {cmd:xsize}({it:num}) {cmd:ysize}({it:num})
-					{cmd:title}({it:str}) {cmd:subtitle}({it:str}) {cmd:note}({it:str}) {cmd:scheme}({it:str}) {cmd:]}
+					{cmdab:xrev:erse} {cmdab:yrev:erse} 
+					{cmd:xtitle}({it:str}) {cmd:ytitle}({it:str}) {cmd:xsize}({it:num}) {cmd:ysize}({it:num}) {cmd:title}({it:str}) {cmd:subtitle}({it:str})
+					{cmd:note}({it:str}) {cmd:scheme}({it:str}) {cmd:name}({it:str})  {cmd:]}
 
 
 {p 4 4 2}
@@ -32,7 +32,7 @@ The command is based on the following guide on Medium: {browse "https://medium.c
 {p2coldent : {opt joyplot y [x]}}The command requires a numeric {it:y} variable and an optional numeric {it:x} variable. If {it:x} is not specified, then overlapping densities for {it:y} are drawn. 
 If x is specified, a lowess fit between {it:y} and {it:x} is performed. Usually {it:x} represents a time variable.{p_end}
 
-{p2coldent : {opt over(group variable)}}This is the group variable that defines the joyplot layers.{p_end}
+{p2coldent : {opt over(variable)}}This is the group variable that defines the joyplot layers.{p_end}
 
 {p2coldent : {opt bwid:th(value)}}A higher bandwidth value will result in higher smoothing. The default value is 0.05 for {opt joyplot y x, over()} and 2 for  {opt joyplot y, over()}.
 These values might need adjustment based on the data scale. Trying changing the bandwith in reasonable steps to avoid over smoothing.{p_end}
@@ -49,6 +49,8 @@ This might require the heights to be adjusted using the {cmd:overlap} option esp
 
 {p2coldent : {opt lines}}Draw colored lines instead of area fills. This is a faster drawing option since area fills are computationally intensive. The option {cmdab:lc:olor()} does not work here. 
 Instead define the line color using the {cmd:color()} option. The option {cmdab:lw:idth()} is allowed.{p_end}
+
+{p2coldent : {opt xrev:erse}, {opt yrev:erse}}Reverse the x and y axes. While reversing the y-axis might be desireable, xreverse should be used with caution.{p_end}
 
 {p 4 4 2}
 {it:{ul:Fine tuning}}
@@ -68,7 +70,8 @@ Instead define the line color using the {cmd:color()} option. The option {cmdab:
 {p2coldent : {opt ylabpos:ition(string)}}The position of the y-axis labels takes on the values {it:left} or {it:right}. The default orientation is {it:left}.{p_end}
 
 {p2coldent : {opt offset(value)}}This option is used for offseting the labels on the y-axis. Default is {it:0}. A higher offsetting can be achieved by providing a value, for example,
- {it:offset(-20)} will move the labels more left if the label has a {it:left} orientation.{p_end}
+ {it:offset(-20)} will move the labels more left if the label has a {it:left} orientation.
+ Since the labels are oriented to the left of a marker, they might extend into the margin.{p_end}
 
 {p2coldent : {opt xlabs:ize(value)}, {opt ylabs:ize(value)}}The size of the x and y-axis labels. Defaults are {it:1.7}.{p_end}
 
@@ -78,11 +81,15 @@ Instead define the line color using the {cmd:color()} option. The option {cmdab:
 
 {p2coldent : {opt xticks(string)}}This option can be used to customize the x-axis ticks. See example below.{p_end}
 
-{p2coldent : {opt xtitle}, {opt ytitle}, {opt title}, {opt subtitle}, {opt note}}These are standard twoway graph options.{p_end}
+{p2coldent : {opt xtitle}, {opt ytitle}}These are standard twoway graph options.{p_end}
+
+{p2coldent : {opt title}, {opt subtitle}, {opt note}}These are standard twoway graph options.{p_end}
 
 {p2coldent : {opt xsize(value)}, {opt ysize(value)}}These are standard twoway graph options for changing the dimensions of the graphs.{p_end}
 
 {p2coldent : {opt scheme(string)}}Load the custom scheme. Above options can be used to fine tune individual elements.{p_end}
+
+{p2coldent : {opt name(string)}}Assign a name to the graph.{p_end}
 
 {synoptline}
 {p2colreset}{...}
@@ -194,15 +201,36 @@ use "https://github.com/asjadnaqvi/The-Stata-Guide/blob/master/data/us_meantemp.
 
 {stata joyplot meantemp, over(month)  yline ylw(0.2) ylc(blue) ylp(dot)}
 
-joyplot meantemp, over(month) bwid(1.5) xlabs(3) ylabs(3) overlap(3) yline ///
+
+- {it:With axis reversal (v1.4)}
+
+{stata joyplot meantemp, over(month) yline yrev }
+
+{stata joyplot meantemp, over(month) yline xrev }
+
+joyplot meantemp, over(month) bwid(1.5) xlabs(3) ylabs(3) overlap(3) yline normg yrev ///
 	ytitle("Month") xtitle("degrees Centigrade") ///
 	title("Mean average temperature in the USA") subtitle("2009-2020 average") ///
 	note("Source: World Bank Climate Change Knowledge Portal (CCKP).", size(vsmall)) ///
 		xsize(3) ysize(5)
 
 
+qui summ meantemp 
+
+	local xmin = r(min)
+	local xmax = r(max)
+
+	joyplot meantemp, over(month) bwid(1.5) xlabs(3) ylabs(3) overlap(3) yline normg color(cividis) alpha(100) ///
+		ytitle("Month") xtitle("degrees Centigrade") xticks(`xmin'(10)`xmax') ///
+		title("Mean average temperature in the USA") subtitle("2009-2020 average") ///
+		note("Source: World Bank Climate Change Knowledge Portal (CCKP).", size(vsmall)) ///
+			xsize(3) ysize(5)
+
+
+
 {title:Version history}
 
+- {bf:1.4} : The options to reverse x and y axes added. Graph saving option added. Several bug fixes and optimizations.
 - {bf:1.3} : Density stacking added. y-axis grid lines added. Placement of labels optimized.
 - {bf:1.21}: xsize and ysize options added. Labels on left-side options added.
 - {bf:1.2} : x-axis angle option added. Global normalization option added. Draw lines only option added.
@@ -213,8 +241,8 @@ joyplot meantemp, over(month) bwid(1.5) xlabs(3) ylabs(3) overlap(3) yline ///
 
 {title:Package details}
 
-Version      : {bf:joyplot} v1.3
-This release : 24 Apr 2022
+Version      : {bf:joyplot} v1.4
+This release : 26 Apr 2022
 First release: 13 Dec 2021
 Repository   : {browse "https://github.com/asjadnaqvi/joyplot":GitHub}
 Keywords     : Stata, graph, joyplot, ridgeline plot

@@ -1,6 +1,6 @@
-*! Joyplot v1.3 24 Apr 2022: stacked densities added. label placement optimized. 
+*! Joyplot v1.4 26 Apr 2022: axes reverse options added. various optimizations
 *! Asjad Naqvi 
-*
+* v1.3  24 Apr 2022: stacked densities added. label placement optimized. 
 * v1.21 15 Apr 2022: xsize/ysize added. ylabels on right option added.
 * v1.2  13 Apr 2022: xlabel angle, local normalization, lines only option added
 * v1.1  07 Apr 2022: several options added
@@ -25,10 +25,11 @@ version 15
  
 	syntax varlist(min=1 max=2 numeric) [if] [in], over(varname) [overlap(real 6) BWIDth(string) color(string) alpha(real 80)	] ///
 		[ LColor(string) LWidth(string) XLABSize(real 1.7) YLABSize(real 1.7) YLABPOSition(string) OFFset(real 0) NORMGlobal lines	] ///
-		[ xticks(string) xtitle(string) ytitle(string) xangle(string) XLABColor(string) YLABColor(string) 		]  ///
+		[ xticks(string) xtitle(passthru) ytitle(passthru) xangle(string) XLABColor(string) YLABColor(string) 		]  ///
 		[ YLine YLColor(string) YLPattern(string) YLWidth(real 0.025) 											]  ///
-		[ title(string) subtitle(string) note(string) scheme(string) xsize(real 5) ysize(real 4)				]  ///
-		[  allopt graphopts(string asis) * 																		] 
+		[ YREVerse XREVerse 																					] 		///
+		[ title(passthru) subtitle(passthru) note(passthru) scheme(passthru) name(passthru) xsize(passthru) ysize(passthru)	]  ///
+		[ allopt graphopts(string asis) * 																		] 
 		
 		
 	// check dependencies
@@ -36,7 +37,14 @@ version 15
 	if _rc != 0 {
 		display as error "The palettes package is missing. Install the {stata ssc install palettes, replace:palettes} and {stata ssc install colrspace, replace:colrspace} packages."
 		exit
-	}	
+	}
+	
+	
+	capture findfile labmask.ado
+	if _rc != 0 {
+		display as error "The labmask package is missing. Click {stata ssc install labmask, replace} to install."
+		exit
+	}		
 	
 	marksample touse, strok
 	
@@ -78,6 +86,25 @@ preserve
 			encode `over', gen(`over2')
 			local over `over2' 
 		}
+		
+	if "`yreverse'" != "" {
+					
+		clonevar over2 = `over'
+		
+		summ `over'
+		replace `over' = r(max) - `over' + 1
+		
+		if "`: value label over2'" != "" {
+			tempvar group2
+			decode over2, gen(`group2')			
+			replace `group2' = string(over2) if `group2'==""
+			labmask `over', val(`group2')
+		}
+		else {
+			labmask `over', val(over2)
+		}
+	}	
+	
 	
 	
 	// normalization 
@@ -130,7 +157,7 @@ preserve
 	
 	if "`xticks'" == "" {
 		summ `xvar'
-		local gap = round((`r(max)' - `r(min)') / 6)
+		local gap = (`r(max)' - `r(min)') / 6
 		local xti  `r(min)'(`gap')`r(max)'
 	}
 	else {
@@ -177,7 +204,9 @@ preserve
 	}
 	else {
 		local bw  `bwidth'
-	}			
+	}	
+	
+	if "`xreverse'" != "" local xrev xscale(reverse)
 
 	// y labels 
 
@@ -189,7 +218,7 @@ preserve
 	egen `tag' = tag(`over')
 	
 	
-	if ("`ylabposition'" == "") | ("`ylabposition'" == "left") {
+	if ("`ylabposition'" == "") | ("`ylabposition'" == "left")  {
 		qui summ `xvar'
 		replace `xpoint' = r(min) - ((r(max) - r(min)) * 0.10) + `offset' if `tag'==1
 	}
@@ -198,6 +227,7 @@ preserve
 		replace `xpoint' = r(max) + ((r(max) - r(min)) * 0.01) + `offset' if `tag'==1
 	}
 	
+
 	
 	
 	gen `ypoint' = .
@@ -286,14 +316,16 @@ preserve
 		`mygraph'  	///
 		(scatter `ypoint' `xpoint', mlabcolor(`ycolor') msize(zero) msymbol(point) mlabel(`over') mlabsize(`ylabsize') mcolor(none)) ///
 		, ///
-		xlabel(`xti', labcolor(`xcolor') nogrid labsize(`xlabsize') angle(`xang')) xscale(range(`x1' `x2')) ///
+		xlabel(`xti', labcolor(`xcolor') nogrid labsize(`xlabsize') angle(`xang')) xscale(range(`x1' `x2')) `xrev' ///
 		ylabel(, nolabels noticks nogrid) yscale(noline) ///
-		legend(off) title(`title') subtitle(`subtitle') note(`note') xtitle(`xtitle') ytitle(`ytitle')  ///
-		xsize(`xsize') ysize(`ysize')  scheme(`scheme')
+			legend(off) `title' `subtitle' `note' `xtitle' `ytitle'  ///
+			`xsize' `ysize' `scheme' `name' 
 
 restore			
 	}
 }
+
+
 
 ///////////////////
 // one variable  //
@@ -307,13 +339,36 @@ preserve
 	keep if `touse'
 	
 	
+	// finetune the over variable
+	
 	cap confirm numeric var `over'
-		if _rc!=0 {
+	
+	if _rc!=0 {
 			tempvar over2
 			encode `over', gen(`over2')
 			local over `over2' 
-		}	
+		}
+		
 
+		
+	if "`yreverse'" != "" {
+					
+		clonevar over2 = `over'
+		
+		summ `over'
+		replace `over' = r(max) - `over' + 1
+		
+		if "`: value label over2'" != "" {
+			tempvar group2
+			decode over2, gen(`group2')			
+			replace `group2' = string(over2) if `group2'==""
+			labmask `over', val(`group2')
+		}
+		else {
+			labmask `over', val(over2)
+		}
+	}		
+		
 		
 	if "`bwidth'" == "" {
 		local bw  2
@@ -325,8 +380,11 @@ preserve
 	
 	// counters
 	local dmax  = 0
-	local xrmin = 0
-	local xrmax = 0
+	
+	summ `varlist'
+	
+	local xrmin = r(min)
+	local xrmax = r(max)
 	
 	
 	levelsof `over', local(lvls) 
@@ -334,26 +392,30 @@ preserve
 	
 	foreach x of local lvls {
 		
-		*tempvar x`newx' y`newx' 
-		
+
 		summ `over'
 		local newx = `r(max)' + 1 - `x'   // reverse the sorting
 
 		kdensity `varlist' if `over'==`x', generate(x`newx' y`newx') bwid(`bw') nograph
 		
 		summ y`newx', meanonly
-		if r(max) > `dmax' local dmax = r(max)
+		if r(max) > `dmax' local dmax = r(max)   // global max
 	
 		summ x`newx', meanonly	
 			if r(min) < `xrmin' local xrmin = r(min)
 			if r(max) > `xrmax' local xrmax = r(max)
 	}
 
-
+	// pad the minmax to avoid tight axes
+	
+	local pad = (`xrmax' -`xrmin') * 0.02
+	
+	local xrmin = `xrmin' - `pad'
+	local xrmax = `xrmax' + `pad'
+	
 	
 	// normalization 
 
-	
 	if "`normglobal'" != ""   {
 	
 		levelsof `over', local(lvls)
@@ -400,7 +462,7 @@ preserve
 	
 	if "`xticks'" == "" {
 		
-		local gap = round((`xrmax' - `xrmin') / 6)
+		local gap = (`xrmax' - `xrmin') / 5
 		local xti  `xrmin'(`gap')`xrmax'
 	}
 	else {
@@ -442,7 +504,7 @@ preserve
 		local ylp  `ylpattern'
 	}
 	
-
+	if "`xreverse'" != "" local xrev xscale(reverse)
 
 	// y labels 
 
@@ -552,12 +614,11 @@ preserve
 		`mygraph'  ///
 		(scatter `ypoint' `xpoint', mlabcolor(`ycolor') msize(zero) msymbol(point) mlabel(`over') mlabsize(`ylabsize') mcolor(none)) ///
 		, ///
-		xlabel(`xti', labcolor(`xcolor') nogrid labsize(`xlabsize') angle(`xang')) xscale(range(`x1' `x2')) ///
-		ylabel(, nolabels noticks nogrid) yscale(noline) ///
-		legend(off) title(`title') subtitle(`subtitle') note(`note') xtitle(`xtitle') ytitle(`ytitle')  ///
-		xsize(`xsize') ysize(`ysize')  scheme(`scheme')
+			xlabel(`xti', labcolor(`xcolor') nogrid labsize(`xlabsize') angle(`xang')) xscale(range(`x1' `x2'))  ///  
+			ylabel(, nolabels noticks nogrid) yscale(noline) ///
+			legend(off) `title' `subtitle' `note' `xtitle' `ytitle' `xrev'  ///
+			`xsize' `ysize' `scheme' `name' 
 
-		
 		
 restore			
 	}
