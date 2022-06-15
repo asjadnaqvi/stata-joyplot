@@ -10,7 +10,7 @@ This package provides the ability to draw joyplot or ridgeline plots in Stata. I
 
 The package can be installed via SSC or GitHub. The GitHub version, *might* be more recent due to bug fixes, feature updates etc, and *may* contain syntax improvements and changes in *default* values. See version numbers below. Eventually the GitHub version is published on SSC.
 
-The package (**v1.2**) is available on SSC and can be installed as follows:
+The package (**v1.4**) is available on SSC and can be installed as follows:
 ```
 ssc install joyplot, replace
 ```
