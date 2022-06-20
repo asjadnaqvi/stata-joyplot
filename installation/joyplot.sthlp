@@ -1,7 +1,7 @@
 {smcl}
-{* 26April2022}{...}
+{* 20June2022}{...}
 {hi:help joyplot}{...}
-{right:{browse "https://github.com/asjadnaqvi/stata-joyplot":joyplot v1.4 (GitHub)}}
+{right:{browse "https://github.com/asjadnaqvi/stata-joyplot":joyplot v1.41 (GitHub)}}
 
 {hline}
 
@@ -227,9 +227,12 @@ qui summ meantemp
 			xsize(3) ysize(5)
 
 
+{hline}
 
 {title:Version history}
 
+
+- {bf:1.41}: Fixed the dependency package installations. Joyplot can now take numeric {it:over} values.
 - {bf:1.4} : The options to reverse x and y axes added. Graph saving option added. Several bug fixes and optimizations.
 - {bf:1.3} : Density stacking added. y-axis grid lines added. Placement of labels optimized.
 - {bf:1.21}: xsize and ysize options added. Labels on left-side options added.
@@ -237,12 +240,12 @@ qui summ meantemp
 - {bf:1.1} : Code cleanup. Various options added.
 - {bf:1.0} : First version.
 
-{hline}
+
 
 {title:Package details}
 
-Version      : {bf:joyplot} v1.4
-This release : 26 Apr 2022
+Version      : {bf:joyplot} v1.41
+This release : 20 Jun 2022
 First release: 13 Dec 2021
 Repository   : {browse "https://github.com/asjadnaqvi/joyplot":GitHub}
 Keywords     : Stata, graph, joyplot, ridgeline plot
@@ -251,6 +254,14 @@ License      : {browse "https://opensource.org/licenses/MIT":MIT}
 Author       : {browse "https://github.com/asjadnaqvi":Asjad Naqvi}
 E-mail       : asjadnaqvi@gmail.com
 Twitter      : {browse "https://twitter.com/AsjadNaqvi":@AsjadNaqvi}
+
+
+{title:Acknowledgements}
+
+GitHub users {it:johnchin14} and {it:van-alfen} suggested several enhancements to the code. {it:van-alfen} also reported package errors.
+
+
+{title:Feedback}
 
 Please submit bugs, errors, feature requests on {browse "https://github.com/asjadnaqvi/stata-joyplot/issues":GitHub} by opening a new issue.
 

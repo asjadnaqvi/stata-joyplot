@@ -1,7 +1,7 @@
 ![StataMin](https://img.shields.io/badge/stata-2015-blue) ![issues](https://img.shields.io/github/issues/asjadnaqvi/stata-joyplot) ![license](https://img.shields.io/github/license/asjadnaqvi/stata-joyplot) ![Stars](https://img.shields.io/github/stars/asjadnaqvi/stata-joyplot) ![version](https://img.shields.io/github/v/release/asjadnaqvi/stata-joyplot) ![release](https://img.shields.io/github/release-date/asjadnaqvi/stata-joyplot)
 
 
-# joyplot v1.4
+# joyplot v1.41
 
 This package provides the ability to draw joyplot or ridgeline plots in Stata. It is based on the [Joyplot Guide](https://medium.com/the-stata-guide/covid-19-visualizations-with-stata-part-8-joy-plots-ridge-line-plots-dbe022e7264d) that I released in October 2020.
 
@@ -15,7 +15,7 @@ The package (**v1.4**) is available on SSC and can be installed as follows:
 ssc install joyplot, replace
 ```
 
-Or it can be installed from GitHub (**v1.4**):
+Or it can be installed from GitHub (**v1.41**):
 
 ```
 net install joyplot, from("https://raw.githubusercontent.com/asjadnaqvi/stata-joyplot/main/installation/") replace
@@ -50,7 +50,7 @@ graph set window fontface "Arial Narrow"
 
 ## Syntax
 
-The syntax for v1.4 is as follows:
+The syntax for v1.41 is as follows:
 
 ```
 joyplot y [x] [if] [in], over(variable) 
@@ -316,6 +316,10 @@ Please open an [issue](https://github.com/asjadnaqvi/stata-joyplot/issues) to re
 
 
 ## Versions
+
+**v1.41 (20 Jun 2022)**
+- Fix to labmask installation
+- over now takes numerical values
 
 **v1.4 (26 Apr 2022)**
 - option to reverse x and y axes added
