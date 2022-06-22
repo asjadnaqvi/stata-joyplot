@@ -1,5 +1,6 @@
-*! Joyplot v1.41 20 Jun 2022: installations fix, numerical over fix.
+*! Joyplot v1.42 22 Jun 2022: y-axis was bugged in the over plot
 *! Asjad Naqvi 
+* v1.41 20 Jun 2022: installations fix, numerical over fix.
 * v1.4  26 Apr 2022: axes reverse options added. various optimizations
 * v1.3  24 Apr 2022: stacked densities added. label placement optimized. 
 * v1.21 15 Apr 2022: xsize/ysize added. ylabels on right option added.
@@ -60,7 +61,7 @@ version 15
 
 if `length' == 2 {
 
-		gettoken yvar xvar : varlist 
+	gettoken yvar xvar : varlist 
 		
 	
 qui {	
@@ -351,19 +352,18 @@ preserve
 	
 	cap confirm numeric var `over'
 	
-	if _rc!=0 {
+	if _rc!=0 {  // if string
 		tempvar over2
 		encode `over', gen(`over2')
 		local over `over2' 
 	}
 	else {
 		tempvar tempov over2
-		tostring `over', gen(`tempov')	
-		encode `tempov', gen(`over2')
+		egen `over2' = group(`over')
+		labmask `over2', val(`over')
 		local over `over2' 
 	}
 	
-		
 			
 	if "`yreverse'" != "" {
 					
@@ -383,7 +383,6 @@ preserve
 		}
 	}		
 		
-	
 		
 		
 	if "`bwidth'" == "" {
@@ -535,11 +534,9 @@ preserve
 	
 	
 	if ("`ylabposition'" == "") | ("`ylabposition'" == "left") {
-		*qui summ `xvar'
 		replace `xpoint' = `xrmin' - ((`xrmax' - `xrmin') * 0.10) + `offset' if `tag'==1
 	}
 	if ("`ylabposition'" == "right")  {	
-		*qui summ `xvar'
 		replace `xpoint' = `xrmax' + ((`xrmax' - `xrmin') * 0.01) + `offset' if `tag'==1
 	}
 	
@@ -579,15 +576,11 @@ preserve
 	foreach x of local lvls {
 		replace `ybot`x'' = `ybot`x'' - `shift'
 		replace `ytop`x'' = `ytop`x'' - `shift'	
-		
 	}
 	
 	
 	levelsof `over', local(lvls)
 	local items = `r(r)'
-
-	noi di "check2"	
-	
 	
 	foreach x of local lvls {
 
@@ -620,7 +613,6 @@ preserve
 	}
 	
 	
-	
 	if "`ylabposition'" == "" | "`ylabposition'" == "left" {
 		local x1 = `xrmin' - ((`xrmax' - `xrmin') * 0.12) + `offset'
 		local x2 = `xrmax'
@@ -644,7 +636,7 @@ preserve
 			`xsize' `ysize' `scheme' `name' 
 		
 		
-restore			
+	restore			
 	}
 }
 
@@ -657,3 +649,5 @@ end
 *********************************
 ******** END OF PROGRAM *********
 *********************************
+
+
