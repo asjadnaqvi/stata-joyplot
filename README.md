@@ -50,7 +50,7 @@ graph set window fontface "Arial Narrow"
 
 ## Syntax
 
-The syntax for v1.41 is as follows:
+The syntax for v1.42 is as follows:
 
 ```
 joyplot y [x] [if] [in], over(variable) 
@@ -318,7 +318,7 @@ Please open an [issue](https://github.com/asjadnaqvi/stata-joyplot/issues) to re
 ## Versions
 
 **v1.42 (22 Jun 2022)**
-- Values were wrongly assigned on the y-axis if the variable was numeric (thanks to Barry Burden)
+- Values were wrongly assigned on the y-axis if the over variable was numeric (reported by Barry Burden)
 
 **v1.41 (20 Jun 2022)**
 - Fix to labmask installation
