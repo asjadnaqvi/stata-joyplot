@@ -10,7 +10,7 @@ This package provides the ability to draw joyplot or ridgeline plots in Stata. I
 
 The package can be installed via SSC or GitHub. The GitHub version, *might* be more recent due to bug fixes, feature updates etc, and *may* contain syntax improvements and changes in *default* values. See version numbers below. Eventually the GitHub version is published on SSC.
 
-The package (**v1.4**) is available on SSC and can be installed as follows:
+The package (**v1.42**) is available on SSC and can be installed as follows:
 ```
 ssc install joyplot, replace
 ```
@@ -45,7 +45,6 @@ I also prefer narrow fonts in figures with long labels. You can change this as f
 ```
 graph set window fontface "Arial Narrow"
 ```
-
 
 
 ## Syntax
@@ -318,7 +317,8 @@ Please open an [issue](https://github.com/asjadnaqvi/stata-joyplot/issues) to re
 ## Versions
 
 **v1.42 (22 Jun 2022)**
-- Values were wrongly assigned on the y-axis if the over variable was numeric (reported by Barry Burden)
+- Values were wrongly assigned on the y-axis if the over variable was numeric (reported by Barry Burden).
+- Fixes to "over" variable. It can now take on numeric, string, and labeled numeric values.
 
 **v1.41 (20 Jun 2022)**
 - Fix to labmask installation
