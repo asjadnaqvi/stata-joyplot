@@ -1,7 +1,7 @@
 {smcl}
-{* 20June2022}{...}
+{* 22June2022}{...}
 {hi:help joyplot}{...}
-{right:{browse "https://github.com/asjadnaqvi/stata-joyplot":joyplot v1.41 (GitHub)}}
+{right:{browse "https://github.com/asjadnaqvi/stata-joyplot":joyplot v1.42 (GitHub)}}
 
 {hline}
 
