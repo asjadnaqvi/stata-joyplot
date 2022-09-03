@@ -1,5 +1,7 @@
-*! Joyplot v1.42 22 Jun 2022: y-axis was bugged in the over plot
-*! Asjad Naqvi 
+*! Joyplot v1.5 03 Sep 2022: bandwidth fixed. x-axis is passthru. defaults updated.
+*! Asjad Naqvi (asjadnaqvi@gmail.com)
+
+* v1.42 22 Jun 2022: y-axis was bugged in the over plot
 * v1.41 20 Jun 2022: installations fix, numerical over fix.
 * v1.4  26 Apr 2022: axes reverse options added. various optimizations
 * v1.3  24 Apr 2022: stacked densities added. label placement optimized. 
@@ -25,13 +27,11 @@ program joyplot, sortpreserve
 
 version 15
  
-	syntax varlist(min=1 max=2 numeric) [if] [in], over(varname) [overlap(real 6) BWIDth(string) color(string) alpha(real 80)	] ///
-		[ LColor(string) LWidth(string) XLABSize(real 1.7) YLABSize(real 1.7) YLABPOSition(string) OFFset(real 0) NORMGlobal lines	] ///
-		[ xticks(string) xtitle(passthru) ytitle(passthru) xangle(string) XLABColor(string) YLABColor(string) 		]  ///
-		[ YLine YLColor(string) YLPattern(string) YLWidth(real 0.025) 											]  ///
-		[ YREVerse XREVerse 																					] 		///
-		[ title(passthru) subtitle(passthru) note(passthru) scheme(passthru) name(passthru) xsize(passthru) ysize(passthru)	]  ///
-		[ allopt graphopts(string asis) * 																		] 
+	syntax varlist(min=1 max=2 numeric) [if] [in], over(varname) [overlap(real 6) BWIDth(real 0.5) color(string) alpha(real 80) OFFset(real 0) NORMGlobal lines		] ///
+		[ LColor(string) LWidth(string) YLABColor(string) YLABSize(real 1.7) YLABPOSition(string) 									] ///
+		[ YLine YLColor(string) YLPattern(string) YLWidth(real 0.04) YREVerse XREVerse 											] ///
+		[ xtitle(passthru) ytitle(passthru) xlabel(passthru) title(passthru) subtitle(passthru) note(passthru)						] ///
+		[ scheme(passthru) name(passthru) aspect(passthru) xsize(passthru) ysize(passthru)											] 
 		
 		
 	// check dependencies
@@ -46,13 +46,30 @@ version 15
 	if _rc != 0 {
 		display as error "The {it:labmask} package is missing. Click {stata ssc install labutil, replace} to install."
 		exit
-	}		
+	}
+	
+	if `overlap' < 1 {
+		display as error "overlap() should be >= 1"
+		exit
+	}
+	
+	
+	
+	
+	// local options
+	
+	if "`color'"  	 == "" local color 		CET C1	
+	if "`lcolor'" 	 == "" local lcolor 	white
+	if "`lwidth'" 	 == "" local lwidth 	0.15
+	if "`ylabcolor'" == "" local ylabcolor 	black	
+	if "`ylcolor'"	 == "" local ylcolor  	black	
+	if "`ylpattern'" == "" local ylpattern  solid
+	if "`xreverse'"  != "" local xreverse 	xscale(reverse)		
+	
 	
 	marksample touse, strok
 	
 	local length : word count `varlist'
-	
-	
 
 	
 ////////////////////
@@ -65,7 +82,6 @@ if `length' == 2 {
 		
 	
 qui {	
-cap restore	
 preserve	
 	keep if `touse'
 	
@@ -73,7 +89,7 @@ preserve
 	cap drop _fillin
 	fillin `over' `xvar' 
 		
-	cap drop if _fillin==1
+	*cap drop if _fillin==1
 	cap drop _fillin
 	
 	
@@ -104,7 +120,7 @@ preserve
 					
 		clonevar over2 = `over'
 		
-		summ `over'
+		summ `over', meanonly
 		replace `over' = r(max) - `over' + 1
 		
 		if "`: value label over2'" != "" {
@@ -129,7 +145,7 @@ preserve
 		levelsof `over', local(lvls)
 		
 		foreach x of local lvls {
-			 summ `myvar' 
+			 summ `myvar', meanonly
 			 replace `norm' = `myvar' / r(max) if `over'==`x'
 		}
 	}	
@@ -139,87 +155,12 @@ preserve
 		levelsof `over', local(lvls)
 		
 		foreach x of local lvls {
-			 summ `myvar' if `over'==`x'
+			 summ `myvar' if `over'==`x', meanonly
 			 replace `norm' = `myvar' / r(max) if `over'==`x'
 		}
 	}
 
 	
-	// local options
-	
-	if "`color'" == "" {
-		local mycolor viridis
-	}
-	else {
-		local mycolor `color'
-	}
-	
-	if "`lcolor'" == "" {
-		local linec white
-	}
-	else {
-		local linec `lcolor'
-	}
-	
-	if "`lwidth'" == "" {
-		local linew  0.15
-	}
-	else {
-		local linew `lwidth'
-	}
-	
-	if "`xticks'" == "" {
-		summ `xvar'
-		local gap = (`r(max)' - `r(min)') / 6
-		local xti  `r(min)'(`gap')`r(max)'
-	}
-	else {
-		local xti `xticks'
-	}	
-	
-	if "`xlabcolor'" == "" {
-		local xcolor  black
-	}
-	else {
-		local xcolor `xlabcolor'
-	}	
-	
-	if "`ylabcolor'" == "" {
-		local ycolor  black
-	}
-	else {
-		local ycolor `ylabcolor'
-	}	
-	
-	if "`xangle'" == "" {
-		local xang  vertical
-	}
-	else {
-		local xang `xangle'
-	}	
-	
-	if "`ylcolor'" == "" {
-		local ylc  black
-	}
-	else {
-		local ylc  `ylcolor'
-	}
-	
-	if "`ylpattern'" == "" {
-		local ylp  solid
-	}
-	else {
-		local ylp  `ylpattern'
-	}		
-
-	if "`bwidth'" == "" {
-		local bw  0.05
-	}
-	else {
-		local bw  `bwidth'
-	}	
-	
-	if "`xreverse'" != "" local xrev xscale(reverse)
 
 	// y labels 
 
@@ -232,11 +173,11 @@ preserve
 	
 	
 	if ("`ylabposition'" == "") | ("`ylabposition'" == "left")  {
-		qui summ `xvar'
+		qui summ `xvar', meanonly
 		replace `xpoint' = r(min) - ((r(max) - r(min)) * 0.10) + `offset' if `tag'==1
 	}
 	if ("`ylabposition'" == "right")  {	
-		qui summ `xvar'
+		qui summ `xvar', meanonly
 		replace `xpoint' = r(max) + ((r(max) - r(min)) * 0.01) + `offset' if `tag'==1
 	}
 	
@@ -253,12 +194,12 @@ preserve
 	foreach x of local lvls {
 
 
-	summ `over'
-	local newx = `r(max)' + 1 - `x'   
+	summ `over', meanonly
+	local newx = r(max) + 1 - `x'   
 
 	tempvar y`newx'
 	
-    lowess `norm' `xvar' if `over'==`newx', bwid(`bw') gen(`y`newx'') nograph
+    lowess `norm' `xvar' if `over'==`newx', bwid(`bwidth') gen(`y`newx'') nograph
     
     tempvar ybot`newx' ytop`newx'
 	
@@ -285,38 +226,37 @@ preserve
 	foreach x of local lvls {
 
 
-	summ `over'
-	local newx = `r(max)' + 1 - `x'   
+		summ `over', meanonly
+		local newx = r(max) + 1 - `x'   
 	
-	if "`lines'" != "" {
-		colorpalette `mycolor', n(`items') nograph
-		local mygraph `mygraph' line `ytop`newx'' `xvar', lc("`r(p`newx')'") lw(`linew') ||
+		if "`lines'" != "" {
+			colorpalette `color', n(`items') nograph
+			local mygraph `mygraph' line `ytop`newx'' `xvar', lc("`r(p`newx')'") lw(`lwidth') ||
+		}
+		else {
+		colorpalette `color', n(`items') nograph
+			local mygraph `mygraph' rarea  `ytop`newx'' `ybot`newx'' `xvar', fc("`r(p`newx')'%`alpha'") fi(100) lw(none) ||  line `ytop`newx'' `xvar', lc(`lcolor') lw(`lwidth') || 
+			
+		}	
+		
+		replace `ypoint' = (`ybot`newx'' + 0.02) if `tag'==1 & `over'==`newx'	
+		
+		if "`yline'" != "" {
+			local yli `yli' (line `ybot`newx'' `xvar' if `over'==`newx', lp(`ylpattern') lc(`ylcolor') lw(`ylwidth')) ||
+			
+		}
+	
 	}
-	else {
-	colorpalette `mycolor', n(`items') nograph
-        local mygraph `mygraph' rarea  `ytop`newx'' `ybot`newx'' `xvar', fc("`r(p`newx')'%`alpha'") fi(100) lw(none) ||  line `ytop`newx'' `xvar', lc(`linec') lw(`linew') || 
-		
-	}	
-		
-	qui replace `ypoint' = (`ybot`newx'' + 0.02) if `tag'==1 & `over'==`newx'	
-	
-	
-	if "`yline'" != "" {
-		local yli `yli' (line `ybot`newx'' `xvar' if `over'==`newx', lp(`ylp') lc(`ylc') lw(`ylwidth')) ||
-		
-	}
-	
-}
 	
 	
 	if "`ylabposition'" == "" | "`ylabposition'" == "left" {
-		summ `xvar'
+		summ `xvar', meanonly
 		local x1 = r(min) - ((r(max) - r(min)) * 0.12) + `offset'
 		local x2 = r(max)
 	}
 	
 	if "`ylabposition'" == "right"  {
-		summ `xvar'
+		summ `xvar', meanonly
 		local x1 = r(min) 
 		local x2 = r(max) + ((r(max) - r(min)) * 0.12)  + `offset'
 	
@@ -325,12 +265,12 @@ preserve
 	twoway  		///
 		`yli'		///
 		`mygraph'  	///
-		(scatter `ypoint' `xpoint', mlabcolor(`ycolor') msize(zero) msymbol(point) mlabel(`over') mlabsize(`ylabsize') mcolor(none)) ///
+		(scatter `ypoint' `xpoint', mcolor(none) mlabcolor(`ylabcolor') mlabel(`over') mlabsize(`ylabsize') ) ///
 		, ///
-		xlabel(`xti', labcolor(`xcolor') nogrid labsize(`xlabsize') angle(`xang')) xscale(range(`x1' `x2')) `xrev' ///
-		ylabel(, nolabels noticks nogrid) yscale(noline) ///
-			legend(off) `title' `subtitle' `note' `xtitle' `ytitle'  ///
-			`xsize' `ysize' `scheme' `name' 
+			`xlabel' xscale(range(`x1' `x2')) `xreverse' ///
+			ylabel(, nolabels noticks nogrid) yscale(noline) ///
+				legend(off) `title' `subtitle' `note' `xtitle' `ytitle'  ///
+				`aspect' `xsize' `ysize' `scheme' `name' 
 
 restore			
 	}
@@ -375,7 +315,7 @@ preserve
 					
 		clonevar over2 = `over'
 		
-		summ `over'
+		summ `over', meanonly
 		replace `over' = r(max) - `over' + 1
 		
 		if "`: value label over2'" != "" {
@@ -389,20 +329,13 @@ preserve
 		}
 	}		
 		
-		
-		
-	if "`bwidth'" == "" {
-		local bw  2
-	}
-	else {
-		local bw  `bwidth'
-	}		
-			
+
+
 	
 	// counters
 	local dmax  = 0
 	
-	summ `varlist'
+	summ `varlist', meanonly
 	
 	local xrmin = r(min)
 	local xrmax = r(max)
@@ -414,10 +347,10 @@ preserve
 	foreach x of local lvls {
 		
 
-		summ `over'
-		local newx = `r(max)' + 1 - `x'   // reverse the sorting
+		summ `over', meanonly
+		local newx = r(max) + 1 - `x'   // reverse the sorting
 
-		kdensity `varlist' if `over'==`x', generate(x`newx' y`newx') bwid(`bw') nograph
+		kdensity `varlist' if `over'==`x', generate(x`newx' y`newx') bwid(`bwidth') nograph
 		
 		summ y`newx', meanonly
 		if r(max) > `dmax' local dmax = r(max)   // global max
@@ -433,8 +366,6 @@ preserve
 	
 	local xrmin = `xrmin' - `pad'
 	local xrmax = `xrmax' + `pad'
-	
-	
 	
 	
 	// normalization 
@@ -458,76 +389,7 @@ preserve
 		}
 	}
 
-	
-	
-	// local options
-	
-	if "`color'" == "" {
-		local mycolor viridis
-	}
-	else {
-		local mycolor `color'
-	}
-	
-	if "`lcolor'" == "" {
-		local linec white
-	}
-	else {
-		local linec `lcolor'
-	}
-	
-	if "`lwidth'" == "" {
-		local linew  0.15
-	}
-	else {
-		local linew `lwidth'
-	}
-	
-	if "`xticks'" == "" {
-		
-		local gap = (`xrmax' - `xrmin') / 5
-		local xti  `xrmin'(`gap')`xrmax'
-	}
-	else {
-		local xti `xticks'
-	}	
-	
-	if "`xlabcolor'" == "" {
-		local xcolor  black
-	}
-	else {
-		local xcolor `xlabcolor'
-	}	
-	
-	if "`ylabcolor'" == "" {
-		local ycolor  black
-	}
-	else {
-		local ycolor `ylabcolor'
-	}	
-	
-	if "`xangle'" == "" {
-		local xang  vertical
-	}
-	else {
-		local xang `xangle'
-	}	
 
-	if "`ylcolor'" == "" {
-		local ylc  black
-	}
-	else {
-		local ylc  `ylcolor'
-	}
-	
-	if "`ylpattern'" == "" {
-		local ylp  solid
-	}
-	else {
-		local ylp  `ylpattern'
-	}
-	
-	if "`xreverse'" != "" local xrev xscale(reverse)
 
 	// y labels 
 
@@ -547,7 +409,6 @@ preserve
 	}
 	
 	
-	
 	gen `ypoint' = .
 
 	local mygraph
@@ -559,8 +420,7 @@ preserve
 
 	foreach x of local lvls {
 
-
-		summ `over'
+		summ `over', meanonly
 		local newx = r(max) + 1 - `x'   
 
 		
@@ -570,8 +430,6 @@ preserve
 		 gen double `ytop`newx'' = y`newx' + `ybot`newx''  // if  y`newx'!=.
 	
 	}
-	
-	
 	
 	
 	summ `ybot1', meanonly
@@ -587,20 +445,21 @@ preserve
 	
 	levelsof `over', local(lvls)
 	local items = `r(r)'
+
 	
 	foreach x of local lvls {
 
 
-		summ `over'
+		summ `over', meanonly
 		local newx = r(max) + 1 - `x'   	
 		
 		if "`lines'" != "" {
-			colorpalette `mycolor', n(`items') nograph
-			local mygraph `mygraph' line `ytop`newx'' `x`newx'', lc("`r(p`newx')'") lw(`linew') ||
+			colorpalette `color', n(`items') nograph
+			local mygraph `mygraph' line `ytop`newx'' `x`newx'', lc("`r(p`newx')'") lw(`lwidth') ||
 		}
 		else {
-			colorpalette `mycolor', n(`items') nograph
-			local mygraph `mygraph' rarea  `ytop`newx'' `ybot`newx'' x`newx', fc("`r(p`newx')'%`alpha'") fi(100) lw(none) ||  line `ytop`newx'' x`newx', lc(`linec') lw(`linew') || 
+			colorpalette `color', n(`items') nograph
+			local mygraph `mygraph' rarea  `ytop`newx'' `ybot`newx'' x`newx', fc("`r(p`newx')'%`alpha'") fi(100) lw(none) ||  line `ytop`newx'' x`newx', lc(`lcolor') lw(`lwidth') || 
 			
 		}	
 			
@@ -611,14 +470,12 @@ preserve
 			summ `ybot`newx'', meanonly
 			local yvalue = r(mean)
 			
-			
-			local yli `yli' (pci `yvalue' `xrmin' `yvalue' `xrmax' , lp(`ylp') lc(`ylc') lw(`ylwidth')) ||
+			local yli `yli' (pci `yvalue' `xrmin' `yvalue' `xrmax', lp(`ylpattern') lc(`ylcolor') lw(`ylwidth')) ||
 		
 		}		
-
 	}
 	
-	
+
 	if "`ylabposition'" == "" | "`ylabposition'" == "left" {
 		local x1 = `xrmin' - ((`xrmax' - `xrmin') * 0.12) + `offset'
 		local x2 = `xrmax'
@@ -627,19 +484,18 @@ preserve
 	if "`ylabposition'" == "right"  {
 		local x1 = `xrmin' 
 		local x2 = `xrmax' + ((`xrmax' - `xrmin') * 0.12) + `offset'
-	
 	}
 	
 	
 	twoway  ///
 		`yli'	   ///
 		`mygraph'  ///
-		(scatter `ypoint' `xpoint', mlabcolor(`ycolor') msize(zero) msymbol(point) mlabel(`over') mlabsize(`ylabsize') mcolor(none)) ///
+		(scatter `ypoint' `xpoint', mcolor(none) mlabcolor(`ylabcolor') mlabel(`over') mlabsize(`ylabsize') ) ///
 		, ///
-			xlabel(`xti', labcolor(`xcolor') nogrid labsize(`xlabsize') angle(`xang')) xscale(range(`x1' `x2'))  ///  
+			`xlabel' xscale(range(`x1' `x2'))  ///  
 			ylabel(, nolabels noticks nogrid) yscale(noline) ///
 			legend(off) `title' `subtitle' `note' `xtitle' `ytitle' `xrev'  ///
-			`xsize' `ysize' `scheme' `name' 
+			`aspect' `xsize' `ysize' `scheme' `name' 
 		
 		
 	restore			

@@ -1,7 +1,7 @@
 {smcl}
-{* 22June2022}{...}
+{* 03September2022}{...}
 {hi:help joyplot}{...}
-{right:{browse "https://github.com/asjadnaqvi/stata-joyplot":joyplot v1.42 (GitHub)}}
+{right:{browse "https://github.com/asjadnaqvi/stata-joyplot":joyplot v1.5 (GitHub)}}
 
 {hline}
 
@@ -14,12 +14,10 @@ The command is based on the following guide on Medium: {browse "https://medium.c
 {p 8 15 2}
 
 {cmd:joyplot} {it:y} {it:[x]} {ifin}, {cmd:over}({it:variable}) {cmd:[} {cmd:overlap}({it:num}) {cmdab:bwid:th}({it:num}) {cmd:color}({it:str}) {cmd:alpha}({it:num}) {cmdab:off:set}({it:num}) {cmdab:normg:lobal} {cmd:lines} 
-					{cmdab:lw:idth}({it:num}) {cmdab:lc:olor}({it:str}) {cmdab:xangle}({it:str}) {cmdab:xlabs:ize}({it:num}) {cmdab:ylabs:ize}({it:num}) 
-					{cmdab:yl:ine} {cmdab:ylc:olor}({it:str}) {cmdab:ylw:idth}({it:str}) {cmdab:ylp:attern}({it:str})
-					{cmdab:xlabc:olor}({it:str}) {cmdab:ylabc:olor}({it:str}) {cmdab:ylabpos:ition}({it:str}) {cmd:xticks}({it:str}) 
-					{cmdab:xrev:erse} {cmdab:yrev:erse} 
-					{cmd:xtitle}({it:str}) {cmd:ytitle}({it:str}) {cmd:xsize}({it:num}) {cmd:ysize}({it:num}) {cmd:title}({it:str}) {cmd:subtitle}({it:str})
-					{cmd:note}({it:str}) {cmd:scheme}({it:str}) {cmd:name}({it:str})  {cmd:]}
+					{cmdab:lw:idth}({it:num}) {cmdab:lc:olor}({it:str}) {cmdab:ylabs:ize}({it:num}) {cmdab:ylabc:olor}({it:str}) {cmdab:ylabpos:ition}({it:str})
+					{cmdab:yl:ine} {cmdab:ylc:olor}({it:str}) {cmdab:ylw:idth}({it:str}) {cmdab:ylp:attern}({it:str}) {cmdab:xrev:erse} {cmdab:yrev:erse} 
+					{cmd:xtitle}({it:str}) {cmd:ytitle}({it:str})  {cmd:title}({it:str}) {cmd:subtitle}({it:str}) {cmd:xlabel}({it:str})
+					{cmd:note}({it:str}) {cmd:scheme}({it:str}) {cmd:name}({it:str})   {cmd:]}
 
 
 {p 4 4 2}
@@ -34,23 +32,23 @@ If x is specified, a lowess fit between {it:y} and {it:x} is performed. Usually 
 
 {p2coldent : {opt over(variable)}}This is the group variable that defines the joyplot layers.{p_end}
 
-{p2coldent : {opt bwid:th(value)}}A higher bandwidth value will result in higher smoothing. The default value is 0.05 for {opt joyplot y x, over()} and 2 for  {opt joyplot y, over()}.
-These values might need adjustment based on the data scale. Trying changing the bandwith in reasonable steps to avoid over smoothing.{p_end}
+{p2coldent : {opt bwid:th(value)}}A higher bandwidth value will result in higher smoothing. The default value is {it:0.5}.
+This value might need adjustment depending on the data. Note that if you use {cmd:joyplot} and the ridge lines do not appear, then the bandwidth certainly needs adjustment.
+ In this case, increase the bandwidth.{p_end}
 
-{p2coldent : {opt overlap(value)}}A higher value increases the overlap, and the height of the joyplots. The default value is {it:6}.{p_end}
+{p2coldent : {opt overlap(value)}}A higher value increases the overlap, and the height of the joyplots. The default value is {it:6}, and the minimum allowed value is 1.{p_end}
 
-{p2coldent : {opt color(string)}}Color name is any named scheme defined in the {stata help colorpalette:colorpalette} package. Default is {stata colorpalette viridis:{it:viridis}}. 
-Here one can also pass single colors, for example, {it:color(black)}.{p_end}
+{p2coldent : {opt color(string)}}Color name is any named scheme defined in the {stata help colorpalette:colorpalette} package. Default is {stata colorpalette CET C1:{it:CET C1}}. 
+Here, one can also pass single colors, for example, {it:color(black)}.{p_end}
 
-{p2coldent : {opt alpha(value)}}Alpha is used to change the transparency of the drawn layers. Default is {it:80} for 80%.{p_end}
+{p2coldent : {opt alpha(value)}}Alpha is used to change the transparency of the area fills. Default value is {it:80} for 80% transparency.{p_end}
 
-{p2coldent : {opt normg:lobal}}Normalize by the global value. This ensures that the heights are referenced to the overall maximum of the {it:y} variable which makes groups comparable. 
-This might require the heights to be adjusted using the {cmd:overlap} option especially if some groups are very dominant. See examples below.{p_end}
+{p2coldent : {opt normg:lobal}}Normalize by the global maximum of the {it:y} variable.{p_end}
 
-{p2coldent : {opt lines}}Draw colored lines instead of area fills. This is a faster drawing option since area fills are computationally intensive. The option {cmdab:lc:olor()} does not work here. 
-Instead define the line color using the {cmd:color()} option. The option {cmdab:lw:idth()} is allowed.{p_end}
+{p2coldent : {opt lines}}Draw colored lines instead of area fills. This option is much faster since area fills are computationally intensive. The option {cmdab:lc:olor()} does not work here. 
+Instead define the line colors using the {cmd:color()} option. The option {cmdab:lw:idth()} is allowed.{p_end}
 
-{p2coldent : {opt xrev:erse}, {opt yrev:erse}}Reverse the x and y axes. While reversing the y-axis might be desireable, xreverse should be used with caution.{p_end}
+{p2coldent : {opt xrev:erse}, {opt yrev:erse}}Reverse the x and y axes. While reversing the y-axis might be desireable, for example, to change the alphabetical order of the categories, xreverse should be used with caution.{p_end}
 
 {p 4 4 2}
 {it:{ul:Fine tuning}}
@@ -61,9 +59,9 @@ Instead define the line color using the {cmd:color()} option. The option {cmdab:
 
 {p2coldent : {opt yl:ine}}Enable showing the reference y-axis grids lines.{p_end}
 
-{p2coldent : {opt ylyc:olor(string)}}The color of the y-axis grids lines. Default is {it:black}.{p_end}
+{p2coldent : {opt ylc:olor(string)}}The color of the y-axis grids lines. Default is {it:black}.{p_end}
 
-{p2coldent : {opt ylw:idth(value)}}The width of the y-axis grids lines. Default is {it:0.025}.{p_end}
+{p2coldent : {opt ylw:idth(value)}}The width of the y-axis grids lines. Default is {it:0.04}.{p_end}
 
 {p2coldent : {opt ylp:attern(string)}}The pattern of the y-axis grids lines. Default is {it:solid}.{p_end}
 
@@ -73,23 +71,15 @@ Instead define the line color using the {cmd:color()} option. The option {cmdab:
  {it:offset(-20)} will move the labels more left if the label has a {it:left} orientation.
  Since the labels are oriented to the left of a marker, they might extend into the margin.{p_end}
 
-{p2coldent : {opt xlabs:ize(value)}, {opt ylabs:ize(value)}}The size of the x and y-axis labels. Defaults are {it:1.7}.{p_end}
 
-{p2coldent : {opt xlabc:olor(string)}, {opt ylabc:olor(string)}}This option can be used to customize the x and y-axis label colors especially if non-standard graph schemes are used. Default is {it:black}.{p_end}
+{p2coldent : {opt xtitle()}, {opt ytitle()}, {opt xlabel()}}These are standard twoway graph options.{p_end}
 
-{p2coldent : {opt xangle(string)}}The angle of the x-axis values. Default is vertical. Here one can also specify the angle in degrees for example {it:xangle(45)}.{p_end}
+{p2coldent : {opt title()}, {opt subtitle()}, {opt note()}}These are standard twoway graph options.{p_end}
 
-{p2coldent : {opt xticks(string)}}This option can be used to customize the x-axis ticks. See example below.{p_end}
+{p2coldent : {opt xsize()}, {opt ysize()}, {opt name()}}These are standard twoway graph options for changing the dimensions of the graphs.{p_end}
 
-{p2coldent : {opt xtitle}, {opt ytitle}}These are standard twoway graph options.{p_end}
+{p2coldent : {opt scheme()}}Load the custom scheme. Above options can be used to fine tune individual elements.{p_end}
 
-{p2coldent : {opt title}, {opt subtitle}, {opt note}}These are standard twoway graph options.{p_end}
-
-{p2coldent : {opt xsize(value)}, {opt ysize(value)}}These are standard twoway graph options for changing the dimensions of the graphs.{p_end}
-
-{p2coldent : {opt scheme(string)}}Load the custom scheme. Above options can be used to fine tune individual elements.{p_end}
-
-{p2coldent : {opt name(string)}}Assign a name to the graph.{p_end}
 
 {synoptline}
 {p2colreset}{...}
@@ -231,7 +221,8 @@ qui summ meantemp
 
 {title:Version history}
 
-
+- {bf:1.5} : Major code clean-up. Default values optimized. Redundant options removed.
+- {bf:1.42}: Fix a bug in the y-axis
 - {bf:1.41}: Fixed the dependency package installations. Joyplot can now take numeric {it:over} values.
 - {bf:1.4} : The options to reverse x and y axes added. Graph saving option added. Several bug fixes and optimizations.
 - {bf:1.3} : Density stacking added. y-axis grid lines added. Placement of labels optimized.
@@ -244,8 +235,8 @@ qui summ meantemp
 
 {title:Package details}
 
-Version      : {bf:joyplot} v1.41
-This release : 20 Jun 2022
+Version      : {bf:joyplot} v1.5
+This release : 03 Sep 2022
 First release: 13 Dec 2021
 Repository   : {browse "https://github.com/asjadnaqvi/joyplot":GitHub}
 Keywords     : Stata, graph, joyplot, ridgeline plot
@@ -258,7 +249,7 @@ Twitter      : {browse "https://twitter.com/AsjadNaqvi":@AsjadNaqvi}
 
 {title:Acknowledgements}
 
-GitHub users {it:johnchin14} and {it:van-alfen} suggested several enhancements to the code. {it:van-alfen} also reported package errors.
+GitHub users {it:johnchin14} and {it:van-alfen} suggested several enhancements to the code. {it:van-alfen} also reported package errors. Ka Lok Wong uncovered an issue with bandwidths.
 
 
 {title:Feedback}

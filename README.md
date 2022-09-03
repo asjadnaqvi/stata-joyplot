@@ -1,7 +1,9 @@
 ![StataMin](https://img.shields.io/badge/stata-2015-blue) ![issues](https://img.shields.io/github/issues/asjadnaqvi/stata-joyplot) ![license](https://img.shields.io/github/license/asjadnaqvi/stata-joyplot) ![Stars](https://img.shields.io/github/stars/asjadnaqvi/stata-joyplot) ![version](https://img.shields.io/github/v/release/asjadnaqvi/stata-joyplot) ![release](https://img.shields.io/github/release-date/asjadnaqvi/stata-joyplot)
 
 
-# joyplot v1.42
+# joyplot v1.5
+
+
 
 This package provides the ability to draw joyplot or ridgeline plots in Stata. It is based on the [Joyplot Guide](https://medium.com/the-stata-guide/covid-19-visualizations-with-stata-part-8-joy-plots-ridge-line-plots-dbe022e7264d) that I released in October 2020.
 
@@ -15,7 +17,7 @@ The package (**v1.42**) is available on SSC and can be installed as follows:
 ssc install joyplot, replace
 ```
 
-Or it can be installed from GitHub (**v1.42**):
+Or it can be installed from GitHub (**v1.5**):
 
 ```
 net install joyplot, from("https://raw.githubusercontent.com/asjadnaqvi/stata-joyplot/main/installation/") replace
@@ -49,12 +51,11 @@ graph set window fontface "Arial Narrow"
 
 ## Syntax
 
-The syntax for v1.42 is as follows:
+The syntax for v1.5 is as follows:
 
 ```
 joyplot y [x] [if] [in], over(variable) 
 		[ overlap(num) bwidth(num) color(str) alpha(num) normglobal lines lwidth(num) lcolor(str)
-		xangle(str) xlabsize(num) xlabcolor(str) xticks(str)
 		ylabsize(num) ylabcolor(str) ylabposition(str) offset(num) 
 		yline(str) ylinecolor(str) ylinewith(str) ylinepattern(str)
 		xtitle(str) ytitle(str) yreverse xreverse
@@ -66,14 +67,15 @@ See the help file `help joyplot` for details.
 The most basic use is as follows:
 
 ```
-joyplot y, over(variable)
+joyplot y x, over(variable)
 ```
 
 or
 
 ```
-joyplot y x, over(variable)
+joyplot y, over(variable)
 ```
+
 
 where `y` is the variable we want to plot, and `x` is usually the time dimension. The `over` variable splits the data into different groupings that also determines the colors. The color schemes can be modified using the `color()` option. Here any scheme from the `colorpalettes` package can be used.
 
@@ -96,7 +98,7 @@ keep country date new_cases
 ```
 
 
-### Basic use
+## Two variables
 
 We can generate basic graphs as follows:
 
@@ -114,10 +116,17 @@ joyplot new_cases date if date > 22460, over(country) yline
 
 
 ```
+joyplot new_cases date if date > 22460, over(country) alpha(100)
+```
+
+<img src="/figures/joyplot1_2.png" height="600">
+
+```
 joyplot new_cases date if date > 22460, over(country) lc(black) color(white) alpha(100)
 ```
 
 <img src="/figures/joyplot1_3.png" height="600">
+
 
 ```
 joyplot new_cases date if date > 22460, over(country) lc(white) color(black) alpha(50) lw(0.05)
@@ -158,13 +167,13 @@ joyplot new_cases date if date > 22460, over(country)  lw(0.2) ylabpos(right) xs
 
 
 ```
-joyplot new_cases date if date > 22460, over(country) yrev 
+joyplot new_cases date if date > 22460, over(country) yrev  
 ```
 
 <img src="/figures/joyplot1_9.png" height="600">
 
 ```
-joyplot new_cases date if date > 22460, over(country) yrev xrev offset(20) 
+joyplot new_cases date if date > 22460, over(country) yrev xrev offset(20)
 ```
 
 <img src="/figures/joyplot1_10.png" height="600">
@@ -179,13 +188,13 @@ joyplot new_cases date if date > 22460, over(country) normg
 <img src="/figures/joyplot2.png" height="600">
 
 ```
-joyplot new_cases date if date > 22460, over(country) normg overlap(15) xangle(45)
+joyplot new_cases date if date > 22460, over(country) normg
 ```
 
 <img src="/figures/joyplot2_1.png" height="600">
 
 ```
-joyplot new_cases date if date > 22460, over(country) normg overlap(15) xangle(45) lines
+joyplot new_cases date if date > 22460, over(country) normg overlap(15) 
 ```
 
 <img src="/figures/joyplot2_2.png" height="600">
@@ -207,7 +216,7 @@ local xmax = r(max)
 
 
 joyplot new_cases date if date > 22460, over(country) overlap(8) color(CET C1) alpha(100) ///
-	lc(white) lw(0.2) xticks(`xmin'(60)`xmax') off(-30) ///
+	lc(white) lw(0.2) xlabel(`xmin'(60)`xmax') off(-30) ///
 	xtitle("Date") ytitle("Countries") ///
 	title("{fontface Arial Bold:My joyplot}") subtitle("Some more text here")  ///
 	note("Some text here", size(vsmall)) 
@@ -225,8 +234,8 @@ local xmin = r(min)
 local xmax = r(max)
 	
 joyplot new_cases date if date > 22460, over(country) overlap(8) color(CET C1) alpha(90) ///
-	lc(black) lw(0.1) xticks(`xmin'(60)`xmax') off(-30) ///
-	ylabc(white) xlabc(white) /// 
+	lc(black) lw(0.1) xlabel(`xmin'(60)`xmax') off(-30) ///
+	ylabc(white) /// 
 	xtitle("Date") ytitle("Countries") ///
 	title("{fontface Arial Bold:My joyplot}") subtitle("a subtitle here", color(white)) ///
 	note("Some text here", size(vsmall)) scheme(neon)
@@ -244,8 +253,8 @@ local xmin = r(min)
 local xmax = r(max)
 	
 joyplot new_cases date if date > 22425, over(country) overlap(8) color(black) alpha(100) bwid(0.1) ///
-	lc(white) lw(0.2) xticks(`xmin' `xmax') off(+20) ///
-	ylabc(none) xlabc(none) xangle(0) /// 
+	lc(white) lw(0.2) xlabel(none) off(+20) ///
+	ylabc(none)   /// 
 	xtitle("") ytitle("") ///
 	title("{fontface Arial Bold:The Joy Division look}") scheme(neon)
 ```
@@ -253,7 +262,7 @@ joyplot new_cases date if date > 22425, over(country) overlap(8) color(black) al
 <img src="/figures/joyplot6.png" height="600">
 
 
-### Stacked densities (v1.3)
+## Single variable
 
 Load the data that contains average USA state-level monthly temperatures for the period 1991-2020:
 
@@ -284,7 +293,7 @@ joyplot meantemp, over(month)  yline ylw(0.2) ylc(blue) ylp(dot) ylabpos(right)
 <img src="/figures/joyplot7_3.png" height="600">
 
 ```
-joyplot meantemp, over(month) bwid(1.5) xlabs(3) ylabs(3) overlap(3) yline normg yrev ///
+joyplot meantemp, over(month) bwid(1.5) ylabs(3) overlap(3) yline normg yrev ///
 	ytitle("Month") xtitle("degrees Centigrade") ///
 	title("Mean average temperature in the USA") subtitle("2009-2020 average") ///
 	note("Source: World Bank Climate Change Knowledge Portal (CCKP).", size(vsmall)) ///
@@ -299,8 +308,8 @@ qui summ meantemp
 local xmin = r(min)
 local xmax = r(max)
 
-joyplot meantemp, over(month) bwid(1.5) xlabs(3) ylabs(3) overlap(3) yline normg color(cividis) alpha(100) ///
-	ytitle("Month") xtitle("degrees Centigrade") xticks(`xmin'(10)`xmax') ///
+joyplot meantemp, over(month) bwid(1.5) ylabs(3) overlap(3) yline normg color(scico corkO) alpha(100) ///
+	ytitle("Month") xtitle("degrees Centigrade") xlabel(`xmin'(10)`xmax') ///
 	title("Mean average temperature in the USA") subtitle("2009-2020 average") ///
 	note("Source: World Bank Climate Change Knowledge Portal (CCKP).", size(vsmall)) ///
 		xsize(3) ysize(5)
