@@ -109,71 +109,71 @@ joyplot new_cases date if date > 22460, over(country)
 <img src="/figures/joyplot1.png" height="600">
 
 ```
-joyplot new_cases date if date > 22460, over(country) yline
+joyplot new_cases date if date > 22460, over(country) yline bwid(0.1)
 ```
 
 <img src="/figures/joyplot1_1.png" height="600">
 
 
 ```
-joyplot new_cases date if date > 22460, over(country) alpha(100)
+joyplot new_cases date if date > 22460, over(country) alpha(100) bwid(0.1)
 ```
 
 <img src="/figures/joyplot1_2.png" height="600">
 
 ```
-joyplot new_cases date if date > 22460, over(country) lc(black) color(white) alpha(100)
+joyplot new_cases date if date > 22460, over(country) lc(black) color(white) alpha(100) bwid(0.1)
 ```
 
 <img src="/figures/joyplot1_3.png" height="600">
 
 
 ```
-joyplot new_cases date if date > 22460, over(country) lc(white) color(black) alpha(50) lw(0.05)
+joyplot new_cases date if date > 22460, over(country) lc(white) color(black) alpha(50) lw(0.05) bwid(0.1)
 ```
 
 <img src="/figures/joyplot1_4.png" height="600">
 
 ```
-joyplot new_cases date if date > 22460, over(country) lines lw(0.2)
+joyplot new_cases date if date > 22460, over(country) lines lw(0.2) bwid(0.1)
 ```
 
 <img src="/figures/joyplot1_5.png" height="600">
 
 ```
-joyplot new_cases date if date > 22460, over(country) lines lw(0.2) color(black)
+joyplot new_cases date if date > 22460, over(country) lines lw(0.2) bwid(0.1) color(black) 
 ```
 
 <img src="/figures/joyplot1_6.png" height="600">
 
 ```
-joyplot new_cases date if date > 22460, over(country) lines lw(0.2) color(black)
+joyplot new_cases date if date > 22460, over(country) lines lw(0.2) bwid(0.1) color(black)
 ```
 
 <img src="/figures/joyplot1_6.png" height="600">
 
 ```
-joyplot new_cases date if date > 22460, over(country) lines lw(0.2) ylabpos(right)
+joyplot new_cases date if date > 22460, over(country) lines lw(0.2) bwid(0.1) ylabpos(right)
 ```
 
 <img src="/figures/joyplot1_7.png" height="600">
 
 
 ```
-joyplot new_cases date if date > 22460, over(country)  lw(0.2) ylabpos(right) xsize(5) ysize(7)
+joyplot new_cases date if date > 22460, over(country) lw(0.2) bwid(0.1) ylabpos(right) xsize(5) ysize(7)
 ```
 
 <img src="/figures/joyplot1_8.png" height="600">
 
 
 ```
-joyplot new_cases date if date > 22460, over(country) yrev  
+joyplot new_cases date if date > 22460, over(country) yrev bwid(0.1) 
 ```
 
 <img src="/figures/joyplot1_9.png" height="600">
 
 ```
-joyplot new_cases date if date > 22460, over(country) yrev xrev offset(20)
+joyplot new_cases date if date > 22460, over(country) yrev xrev offset(20) bwid(0.1)
 ```
 
 <img src="/figures/joyplot1_10.png" height="600">
@@ -182,19 +182,19 @@ joyplot new_cases date if date > 22460, over(country) yrev xrev offset(20)
 ### Global normalization
 
 ```
-joyplot new_cases date if date > 22460, over(country) normg
+joyplot new_cases date if date > 22460, over(country) bwid(0.1) normg
 ```
 
 <img src="/figures/joyplot2.png" height="600">
 
 ```
-joyplot new_cases date if date > 22460, over(country) normg
+joyplot new_cases date if date > 22460, over(country) bwid(0.1) normg
 ```
 
 <img src="/figures/joyplot2_1.png" height="600">
 
 ```
-joyplot new_cases date if date > 22460, over(country) normg overlap(15) 
+joyplot new_cases date if date > 22460, over(country) bwid(0.1) normg overlap(15) 
 ```
 
 <img src="/figures/joyplot2_2.png" height="600">
@@ -215,7 +215,7 @@ local xmin = r(min)
 local xmax = r(max)
 
 
-joyplot new_cases date if date > 22460, over(country) overlap(8) color(CET C1) alpha(100) ///
+joyplot new_cases date if date > 22460, over(country) bwid(0.1) overlap(8) color(CET C1) alpha(100) ///
 	lc(white) lw(0.2) xlabel(`xmin'(60)`xmax') off(-30) ///
 	xtitle("Date") ytitle("Countries") ///
 	title("{fontface Arial Bold:My joyplot}") subtitle("Some more text here")  ///
@@ -233,7 +233,7 @@ qui summ date if date > 22460
 local xmin = r(min)
 local xmax = r(max)
 	
-joyplot new_cases date if date > 22460, over(country) overlap(8) color(CET C1) alpha(90) ///
+joyplot new_cases date if date > 22460, over(country) overlap(8) bwid(0.1) color(CET C1) alpha(90) ///
 	lc(black) lw(0.1) xlabel(`xmin'(60)`xmax') off(-30) ///
 	ylabc(white) /// 
 	xtitle("Date") ytitle("Countries") ///
@@ -252,7 +252,7 @@ qui summ date if date > 22425
 local xmin = r(min)
 local xmax = r(max)
 	
-joyplot new_cases date if date > 22425, over(country) overlap(8) color(black) alpha(100) bwid(0.1) ///
+joyplot new_cases date if date > 22425, over(country) overlap(8) bwid(0.1) color(black) alpha(100)  ///
 	lc(white) lw(0.2) xlabel(none) off(+20) ///
 	ylabc(none)   /// 
 	xtitle("") ytitle("") ///
