@@ -400,6 +400,18 @@ Please open an [issue](https://github.com/asjadnaqvi/stata-joyplot/issues) to re
 
 ## Versions
 
+**v1.6 (05 Nov 2022)**
+- `color` renamed to `palette` to align it with the other packages
+- Errors checks now halt the program if `over` groups have fewer than 10 observations. This is to prevent density functions from crashing with low data points.
+- New option `norm(global)` or `norm(local)` allows users to draw lines normalized to global or local group-wise maximum values.
+- New option `droplow` drops the groups that do not need the above observation criteria.
+- New option `rescale` rescales the data to start from 0. This allows users to rebase values that start at very high or negative values.
+
+**v1.5 (03 Sep 2022)**
+- Code clean up.
+- Default values updated.
+- Error checks added.
+
 **v1.42 (22 Jun 2022)**
 - Values were wrongly assigned on the y-axis if the over variable was numeric (reported by Barry Burden).
 - Fixes to "over" variable. It can now take on numeric, string, and labeled numeric values.
