@@ -1,7 +1,8 @@
-v 1.5
+v 1.6
 d 'JOYPLOT': A package for creating ridgeline plots
-d Asjad Naqvi, 
-d WU Vienna/IIASA, Austria
+d
+d Asjad Naqvi
+d
 d asjadnaqvi@gmail.com
 d https://medium.com/the-stata-guide
 p joyplot

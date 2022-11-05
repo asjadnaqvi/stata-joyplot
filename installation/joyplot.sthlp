@@ -1,7 +1,7 @@
 {smcl}
-{* 03September2022}{...}
+{* 05November2022}{...}
 {hi:help joyplot}{...}
-{right:{browse "https://github.com/asjadnaqvi/stata-joyplot":joyplot v1.5 (GitHub)}}
+{right:{browse "https://github.com/asjadnaqvi/stata-joyplot":joyplot v1.6 (GitHub)}}
 
 {hline}
 
@@ -13,11 +13,12 @@ The command is based on the following guide on Medium: {browse "https://medium.c
 {marker syntax}{title:Syntax}
 {p 8 15 2}
 
-{cmd:joyplot} {it:y} {it:[x]} {ifin}, {cmd:over}({it:variable}) {cmd:[} {cmd:overlap}({it:num}) {cmdab:bwid:th}({it:num}) {cmd:color}({it:str}) {cmd:alpha}({it:num}) {cmdab:off:set}({it:num}) {cmdab:normg:lobal} {cmd:lines} 
-					{cmdab:lw:idth}({it:num}) {cmdab:lc:olor}({it:str}) {cmdab:ylabs:ize}({it:num}) {cmdab:ylabc:olor}({it:str}) {cmdab:ylabpos:ition}({it:str})
-					{cmdab:yl:ine} {cmdab:ylc:olor}({it:str}) {cmdab:ylw:idth}({it:str}) {cmdab:ylp:attern}({it:str}) {cmdab:xrev:erse} {cmdab:yrev:erse} 
-					{cmd:xtitle}({it:str}) {cmd:ytitle}({it:str})  {cmd:title}({it:str}) {cmd:subtitle}({it:str}) {cmd:xlabel}({it:str})
-					{cmd:note}({it:str}) {cmd:scheme}({it:str}) {cmd:name}({it:str})   {cmd:]}
+{cmd:joyplot} {it:y} {it:[x]} {ifin}, {cmd:over}({it:variable}) {cmd:[} {cmd:overlap}({it:num}) {cmdab:bwid:th}({it:num}) {cmd:palette}({it:str}) {cmd:alpha}({it:num}) {cmdab:off:set}({it:num}) {cmd:lines} 
+					  {cmd:droplow} {cmdab:norm:alize}({it:local} | {it:global}) {cmd:rescale}
+					  {cmdab:lw:idth}({it:num}) {cmdab:lc:olor}({it:str}) {cmdab:ylabs:ize}({it:num}) {cmdab:ylabc:olor}({it:str}) {cmdab:ylabpos:ition}({it:str})
+					  {cmdab:yl:ine} {cmdab:ylc:olor}({it:str}) {cmdab:ylw:idth}({it:str}) {cmdab:ylp:attern}({it:str}) {cmdab:xrev:erse} {cmdab:yrev:erse} 
+					  {cmd:xtitle}({it:str}) {cmd:ytitle}({it:str})  {cmd:title}({it:str}) {cmd:subtitle}({it:str}) {cmd:xlabel}({it:str})
+					  {cmd:note}({it:str}) {cmd:scheme}({it:str}) {cmd:name}({it:str}) {cmd:]}
 
 
 {p 4 4 2}
@@ -30,23 +31,34 @@ The command is based on the following guide on Medium: {browse "https://medium.c
 {p2coldent : {opt joyplot y [x]}}The command requires a numeric {it:y} variable and an optional numeric {it:x} variable. If {it:x} is not specified, then overlapping densities for {it:y} are drawn. 
 If x is specified, a lowess fit between {it:y} and {it:x} is performed. Usually {it:x} represents a time variable.{p_end}
 
-{p2coldent : {opt over(variable)}}This is the group variable that defines the joyplot layers.{p_end}
+{p2coldent : {opt over(variable)}}This is the group variable that defines the joyplot layers.
+If there are fewer than 10 observations per {opt over} group, the program will throw a warning message and exit. This is important to flag since densities are likely to create errors with few observations.
+Either clean these groups manually or use the {opt droplow} option to automatically drop them.{p_end}
 
-{p2coldent : {opt bwid:th(value)}}A higher bandwidth value will result in higher smoothing. The default value is {it:0.5}.
+{p2coldent : {opt droplow}}Automatically drop the {opt over} groups with fewer than 10 observations.{p_end}
+
+{p2coldent : {opt bwid:th(value)}}A higher bandwidth value will result in higher smoothing. The default value is {it:0.1}.
 This value might need adjustment depending on the data. Note that if you use {cmd:joyplot} and the ridge lines do not appear, then the bandwidth certainly needs adjustment.
  In this case, increase the bandwidth.{p_end}
 
 {p2coldent : {opt overlap(value)}}A higher value increases the overlap, and the height of the joyplots. The default value is {it:6}, and the minimum allowed value is 1.{p_end}
 
-{p2coldent : {opt color(string)}}Color name is any named scheme defined in the {stata help colorpalette:colorpalette} package. Default is {stata colorpalette CET C1:{it:CET C1}}. 
-Here, one can also pass single colors, for example, {it:color(black)}.{p_end}
+{p2coldent : {opt palette(string)}}{opt palette} uses any named scheme defined in the {stata help colorpalette:colorpalette} package. Default is {stata colorpalette CET C1:{it:CET C1}}. 
+Here, one can also pass single colors, for example, {it:palette(black)}.{p_end}
 
 {p2coldent : {opt alpha(value)}}Alpha is used to change the transparency of the area fills. Default value is {it:80} for 80% transparency.{p_end}
 
-{p2coldent : {opt normg:lobal}}Normalize by the global maximum of the {it:y} variable.{p_end}
-
 {p2coldent : {opt lines}}Draw colored lines instead of area fills. This option is much faster since area fills are computationally intensive. The option {cmdab:lc:olor()} does not work here. 
-Instead define the line colors using the {cmd:color()} option. The option {cmdab:lw:idth()} is allowed.{p_end}
+Instead define the line colors using the {cmd:palette()} option. The option {cmdab:lw:idth()} is allowed.{p_end}
+
+{p2coldent : {opt norm:alize(local | global)}}Normalize by the local or global maximum of the {it:y} variable. The default is set to {it:global}, but in certain circumstances,
+the user might want to just look at the distribution of a variable within a group. In this case the option {opt norm(local)} can be specified.{p_end}
+
+{p2coldent : {opt rescale}}This option is used to rescale the data such that the global minimum value is set to 0. This is helpful in two instances.
+First, the data contains high values that create a large gap from the horizontal zero axis. This might make it look like that the labels are displaced.
+In this case, {opt rescale} can be used to recenter the horizontal lines to the global minimum value. The minimum and maximum values are stored in locals. 
+See {it:return list}. Second, use this option if the data contains negative values. Since densities do not deal with negative numbers, 
+{opt rescale} helps recentering the data allowing the users to plot the all the values.{p_end}
 
 {p2coldent : {opt xrev:erse}, {opt yrev:erse}}Reverse the x and y axes. While reversing the y-axis might be desireable, for example, to change the alphabetical order of the categories, xreverse should be used with caution.{p_end}
 
@@ -97,130 +109,31 @@ Even if you have these installed, it is highly recommended to update the depende
 
 {title:Examples}
 
-- Load the data and clean it up:
+See {browse "https://github.com/asjadnaqvi/joyplot":GitHub} for detailed examples. A minimum example is given below:
 
 use "https://github.com/asjadnaqvi/The-Stata-Guide/blob/master/data/OWID_data.dta?raw=true", clear
 
 {stata keep if group10==1}
 {stata keep country date new_cases}
 
-{stata joyplot new_cases date, over(country)}
+{stata joyplot new_cases date if date > 22460, over(country) }
 
-{stata joyplot new_cases date if date > 22460, over(country)}
+{stata joyplot new_cases date if date > 22460, over(country) norm(local)}
 
-{stata joyplot new_cases date if date > 22460, over(country) yline} (v1.3)
+{stata joyplot new_cases date if date > 22460, over(country) yline bwid(0.1) norm(local)}
 
-{stata joyplot new_cases date if date > 22460, over(country) lc(black) color(white) alpha(100)}
+{stata joyplot new_cases date if date > 22460, over(country) lc(black) palette(white) alpha(100) norm(local)}
 
-{stata joyplot new_cases date if date > 22460, over(country) lc(white) color(black) alpha(50) lw(0.05)}
+{stata joyplot new_cases date if date > 22460, over(country) lines lw(0.2) palette(black) bwid(0.1) norm(local)}
 
-{stata joyplot new_cases date if date > 22460, over(country) lines lw(0.2)}
-
-{stata joyplot new_cases date if date > 22460, over(country) lines lw(0.2) color(black)}
-
-
-- {it:With normalization (v1.2)}
-
-{stata joyplot new_cases date if date > 22460, over(country) normg}
-
-{stata joyplot new_cases date if date > 22460, over(country) normg overlap(15) xangle(45)}
-
-{stata joyplot new_cases date if date > 22460, over(country) normg overlap(15) xangle(45) lines}
-
-{stata joyplot new_cases date if date > 22460, over(country) bwid(0.1) off(-20) overlap(10) lw(none)}
-
-
-- {it:y label orientiation and graph sizes (v1.21)}
-
-{stata joyplot new_cases date if date > 22460, over(country) lines lw(0.2) ylabpos(right)}
-
-{stata joyplot new_cases date if date > 22460, over(country)  lw(0.2) ylabpos(right) xsize(5) ysize(7)}
-
-
-- {it:With custom dates}
-
-qui summ date if date > 22460
-
-local xmin = r(min)
-local xmax = r(max)
-
-
-joyplot new_cases date if date > 22460, over(country) overlap(8) color(CET C1) alpha(100) ///
-	lc(white) lw(0.2) xticks(`xmin'(30)`xmax') off(-30) ///
-	xtitle("Date") ytitle("Countries") ///
-	title("{fontface Arial Bold:My joyplot}") subtitle("Some more text here")  ///
-	note("Some text here", size(vsmall)) 
-
-
-- {it:With a custom graph scheme}
-
-The example below uses the {stata ssc install schemepack, replace:schemepack} suite and loads the {stata set scheme neon:neon} which has a black background. Here we need to fix some colors:
-
-qui summ date if date > 22460
-
-local xmin = r(min)
-local xmax = r(max)
-	
-joyplot new_cases date if date > 22460, over(country) overlap(8) color(CET C1) alpha(90) ///
-	lc(black) lw(0.1) xticks(`xmin'(60)`xmax') off(-30) ///
-	ylabc(white) xlabc(white) /// 
-	xtitle("Date") ytitle("Countries") ///
-	title("{fontface Arial Bold:My joyplot}") subtitle("a subtitle here", color(white)) ///
-	note("Some text here", size(vsmall)) scheme(neon)
-
-
-- {it:The Joy Division look:}
-
-qui summ date if date > 22425
-
-local xmin = r(min)
-local xmax = r(max)
-	
-joyplot new_cases date if date > 22425, over(country) overlap(8) color(black) alpha(100) bwid(0.1) ///
-	lc(white) lw(0.2) xticks(`xmin' `xmax') off(+20) ///
-	ylabc(none) xlabc(none) xangle(0) /// 
-	xtitle("") ytitle("") ///
-	title("{fontface Arial Bold:The Joy Division look}") scheme(neon)
-
-
-- {it:With stacked densities (v1.3)}
-
-use "https://github.com/asjadnaqvi/The-Stata-Guide/blob/master/data/us_meantemp.dta?raw=true", clear
-
-{stata joyplot meantemp, over(month)}
-
-{stata joyplot meantemp, over(month)  yline ylw(0.2) ylc(blue) ylp(dot)}
-
-
-- {it:With axis reversal (v1.4)}
-
-{stata joyplot meantemp, over(month) yline yrev }
-
-{stata joyplot meantemp, over(month) yline xrev }
-
-joyplot meantemp, over(month) bwid(1.5) xlabs(3) ylabs(3) overlap(3) yline normg yrev ///
-	ytitle("Month") xtitle("degrees Centigrade") ///
-	title("Mean average temperature in the USA") subtitle("2009-2020 average") ///
-	note("Source: World Bank Climate Change Knowledge Portal (CCKP).", size(vsmall)) ///
-		xsize(3) ysize(5)
-
-
-qui summ meantemp 
-
-	local xmin = r(min)
-	local xmax = r(max)
-
-	joyplot meantemp, over(month) bwid(1.5) xlabs(3) ylabs(3) overlap(3) yline normg color(cividis) alpha(100) ///
-		ytitle("Month") xtitle("degrees Centigrade") xticks(`xmin'(10)`xmax') ///
-		title("Mean average temperature in the USA") subtitle("2009-2020 average") ///
-		note("Source: World Bank Climate Change Knowledge Portal (CCKP).", size(vsmall)) ///
-			xsize(3) ysize(5)
+{stata joyplot new_cases date if date > 22460, over(country) lines lw(0.2) norm(local)}
 
 
 {hline}
 
 {title:Version history}
 
+- {bf:1.6} : {it:color} renamed to {it:palette}. Global normalization is now default. Rescale option added. Data checks added. Less than 10 observations per group are flagged.
 - {bf:1.5} : Major code clean-up. Default values optimized. Redundant options removed.
 - {bf:1.42}: Fix a bug in the y-axis
 - {bf:1.41}: Fixed the dependency package installations. Joyplot can now take numeric {it:over} values.
@@ -232,11 +145,10 @@ qui summ meantemp
 - {bf:1.0} : First version.
 
 
-
 {title:Package details}
 
-Version      : {bf:joyplot} v1.5
-This release : 03 Sep 2022
+Version      : {bf:joyplot} v1.6
+This release : 05 Nov 2022
 First release: 13 Dec 2021
 Repository   : {browse "https://github.com/asjadnaqvi/joyplot":GitHub}
 Keywords     : Stata, graph, joyplot, ridgeline plot
@@ -249,10 +161,10 @@ Twitter      : {browse "https://twitter.com/AsjadNaqvi":@AsjadNaqvi}
 
 {title:Acknowledgements}
 
-GitHub users {it:johnchin14} and {it:van-alfen} suggested several enhancements to the code. {it:van-alfen} also reported package errors. Ka Lok Wong uncovered an issue with bandwidths.
+John Chin and {it:van-alfen}(GitHub) suggested several enhancements to the code. Ka Lok Wong uncovered an issue with bandwidths.
 
 
-{title:Feedback}
+{title:Feedback and issues}
 
 Please submit bugs, errors, feature requests on {browse "https://github.com/asjadnaqvi/stata-joyplot/issues":GitHub} by opening a new issue.
 

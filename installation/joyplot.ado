@@ -1,6 +1,7 @@
-*! Joyplot v1.5 03 Sep 2022: bandwidth fixed. x-axis is passthru. defaults updated.
+*! Joyplot v1.5 03 Sep 2022
 *! Asjad Naqvi (asjadnaqvi@gmail.com)
 
+* v1.5  03 Sep 2022: bandwidth fixed. xlabel is now passthru. defaults updated.
 * v1.42 22 Jun 2022: y-axis was bugged in the over plot
 * v1.41 20 Jun 2022: installations fix, numerical over fix.
 * v1.4  26 Apr 2022: axes reverse options added. various optimizations
@@ -23,15 +24,16 @@
 cap program drop joyplot
 
 
-program joyplot, sortpreserve
+program joyplot, rclass  // sortpreserve
 
 version 15
  
-	syntax varlist(min=1 max=2 numeric) [if] [in], over(varname) [overlap(real 6) BWIDth(real 0.5) color(string) alpha(real 80) OFFset(real 0) NORMGlobal lines		] ///
+	syntax varlist(min=1 max=2 numeric) [if] [in], over(varname) [overlap(real 6) BWIDth(real 0.5) palette(string) alpha(real 80) OFFset(real 0) lines		] ///
 		[ LColor(string) LWidth(string) YLABColor(string) YLABSize(real 1.7) YLABPOSition(string) 									] ///
-		[ YLine YLColor(string) YLPattern(string) YLWidth(real 0.04) YREVerse XREVerse 											] ///
-		[ xtitle(passthru) ytitle(passthru) xlabel(passthru) title(passthru) subtitle(passthru) note(passthru)						] ///
-		[ scheme(passthru) name(passthru) aspect(passthru) xsize(passthru) ysize(passthru)											] 
+		[ YLine YLColor(string) YLPattern(string) YLWidth(real 0.04) YREVerse XREVerse 												] ///
+		[ xtitle(passthru) ytitle(passthru) xlabel(passthru) title(passthru) subtitle(passthru) note(passthru)	     				] ///
+		[ scheme(passthru) name(passthru) aspect(passthru) xsize(passthru) ysize(passthru)											] ///
+		[ NORMalize(str) rescale droplow 		 ]  // v1.6 options
 		
 		
 	// check dependencies
@@ -44,7 +46,7 @@ version 15
 	
 	capture findfile labmask.ado
 	if _rc != 0 {
-		display as error "The {it:labmask} package is missing. Click {stata ssc install labutil, replace} to install."
+		qui install labutil, replace
 		exit
 	}
 	
@@ -52,21 +54,25 @@ version 15
 		display as error "overlap() should be >= 1"
 		exit
 	}
-	
-	
-	
-	
+
 	// local options
-	
-	if "`color'"  	 == "" local color 		CET C1	
+
 	if "`lcolor'" 	 == "" local lcolor 	white
 	if "`lwidth'" 	 == "" local lwidth 	0.15
 	if "`ylabcolor'" == "" local ylabcolor 	black	
 	if "`ylcolor'"	 == "" local ylcolor  	black	
 	if "`ylpattern'" == "" local ylpattern  solid
 	if "`xreverse'"  != "" local xreverse 	xscale(reverse)		
+	if "`palette'" == "" {
+		local palette CET C1	
+	}
+	else {
+		tokenize "`palette'", p(",")
+		local palette  `1'
+		local poptions `3'
+	}	
 	
-	
+
 	marksample touse, strok
 	
 	local length : word count `varlist'
@@ -82,8 +88,37 @@ if `length' == 2 {
 		
 	
 qui {	
-preserve	
+	preserve	
+	
 	keep if `touse'
+	
+	gen ones = 1
+	bysort `over': egen counts = sum(ones)
+	egen tag = tag(`over')
+	summ counts, meanonly
+	 
+	if r(min) < 10 {
+		if "`droplow'" == "" {	
+			count if counts < 10 & tag==1
+			di as error "Groups with errors:"
+			noi list `over' if counts < 10 & tag==1
+			di as error "`r(N)' over group(s) (`over') have fewer than 10 observations. Either clean them manually or use the {it:droplow} option to automatically filter them out."
+			exit
+		}	
+		else {
+			drop if counts < 10
+		}
+	}
+	
+	
+	count
+	if r(N) == 0 {
+		di as error "No groups fulfill the criteria."
+		exit
+	}
+	
+
+	drop ones tag counts
 	
 	sort `over' `xvar' 
 	cap drop _fillin
@@ -95,7 +130,7 @@ preserve
 	
 	tempvar myvar // duplicate 
 	gen `myvar' = `yvar' 	
-	*replace `myvar' = . if `myvar' < 0   // TODO: see how to deal with negative values 
+	replace `myvar' = . if `myvar' < 0   // TODO: see how to deal with negative values. v1.6: Suggest rescale option
 	
 	
 	cap confirm numeric var `over'
@@ -135,12 +170,30 @@ preserve
 	}	
 	
 	
+	// rescale v1.6 added
 	
-	// normalization 
+	if "`rescale'" != "" {
+		summ `myvar', meanonly
+		local gmin = r(min)
+		local gmax = r(max)
+		
+		return local jmin `"`gmin'"'
+		return local jmax `"`gmax'"'
+	
+		tempvar myvar2
+		gen double `myvar2' = `myvar' - `gmin'
+		local myvar `myvar2'
+		
+		noi di in yellow "Ridgelines have been rescaled to start from the minimum value. Values range from `gmin' to `gmax' (see {stata return list})."
+	}
+	
+	
+	// normalization v1.6 fix
+	
 	tempvar norm
 	gen double `norm' = .	
 	
-	if "`normglobal'" != ""   {
+	if "`normalize'" == "global" |  "`normalize'" == ""  {
 	
 		levelsof `over', local(lvls)
 		
@@ -230,11 +283,11 @@ preserve
 		local newx = r(max) + 1 - `x'   
 	
 		if "`lines'" != "" {
-			colorpalette `color', n(`items') nograph
+			colorpalette `palette', n(`items') nograph `poptions'
 			local mygraph `mygraph' line `ytop`newx'' `xvar', lc("`r(p`newx')'") lw(`lwidth') ||
 		}
 		else {
-		colorpalette `color', n(`items') nograph
+			colorpalette `palette', n(`items') nograph `poptions'
 			local mygraph `mygraph' rarea  `ytop`newx'' `ybot`newx'' `xvar', fc("`r(p`newx')'%`alpha'") fi(100) lw(none) ||  line `ytop`newx'' `xvar', lc(`lcolor') lw(`lwidth') || 
 			
 		}	
@@ -269,9 +322,12 @@ preserve
 		, ///
 			`xlabel' xscale(range(`x1' `x2')) `xreverse' ///
 			ylabel(, nolabels noticks nogrid) yscale(noline) ///
-				legend(off) `title' `subtitle' `note' `xtitle' `ytitle'  ///
+				legend(off) ///
+				`title' `subtitle' `xtitle' `ytitle' `note' ///
 				`aspect' `xsize' `ysize' `scheme' `name' 
 
+				* note(`note1' `note2', `noptions') ///
+				
 restore			
 	}
 }
@@ -289,7 +345,33 @@ qui {
 preserve	
 	keep if `touse'
 	
+	gen ones = 1
+	bysort `over': egen counts = sum(ones)
+	egen tag = tag(`over')
+	summ counts, meanonly
+	 
+	if r(min) < 10 {
+		if "`droplow'" == "" {	
+			count if counts < 10 & tag==1
+			di as error "Groups with errors:"
+			noi list `over' if counts < 10 & tag==1
+			di as error "`r(N)' over group(s) (`over') have fewer than 10 observations. Either clean them manually or use the {it:droplow} option to automatically filter them out."
+			exit
+		}	
+		else {
+			drop if counts < 10
+		}
+	}
 	
+	count
+	if r(N) == 0 {
+		di as error "No groups fulfill the criteria."
+		exit
+	}
+	
+	drop ones tag counts	
+	
+
 	// finetune the over variable
 	
 	cap confirm numeric var `over'
@@ -454,11 +536,11 @@ preserve
 		local newx = r(max) + 1 - `x'   	
 		
 		if "`lines'" != "" {
-			colorpalette `color', n(`items') nograph
+			colorpalette `palette', n(`items') nograph `poptions'
 			local mygraph `mygraph' line `ytop`newx'' `x`newx'', lc("`r(p`newx')'") lw(`lwidth') ||
 		}
 		else {
-			colorpalette `color', n(`items') nograph
+			colorpalette `palette', n(`items') nograph `poptions'
 			local mygraph `mygraph' rarea  `ytop`newx'' `ybot`newx'' x`newx', fc("`r(p`newx')'%`alpha'") fi(100) lw(none) ||  line `ytop`newx'' x`newx', lc(`lcolor') lw(`lwidth') || 
 			
 		}	
@@ -494,7 +576,8 @@ preserve
 		, ///
 			`xlabel' xscale(range(`x1' `x2'))  ///  
 			ylabel(, nolabels noticks nogrid) yscale(noline) ///
-			legend(off) `title' `subtitle' `note' `xtitle' `ytitle' `xrev'  ///
+			legend(off) ///
+			`title' `subtitle'  `xtitle' `ytitle' `xrev' `note'  ///
 			`aspect' `xsize' `ysize' `scheme' `name' 
 		
 		
