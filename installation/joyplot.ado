@@ -46,7 +46,7 @@ version 15
 	
 	capture findfile labmask.ado
 	if _rc != 0 {
-		qui install labutil, replace
+		qui ssc install labutil, replace
 		exit
 	}
 	
