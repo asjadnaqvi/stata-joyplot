@@ -455,7 +455,6 @@ preserve
 	
 	
 	// normalization 
-
 	if "`normalize'" == "" | "`normalize'" == "global"  {
 	
 		levelsof `over', local(lvls)
@@ -474,8 +473,6 @@ preserve
 			 replace y`x' = y`x' / r(max) 
 		}
 	}
-
-
 
 	// y labels 
 
@@ -529,9 +526,6 @@ preserve
 	}
 	
 
-	
-	
-	// draw
 	
 	levelsof `over', local(lvls)
 	local items = `r(r)'
