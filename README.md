@@ -1,8 +1,13 @@
 ![StataMin](https://img.shields.io/badge/stata-2015-blue) ![issues](https://img.shields.io/github/issues/asjadnaqvi/stata-joyplot) ![license](https://img.shields.io/github/license/asjadnaqvi/stata-joyplot) ![Stars](https://img.shields.io/github/stars/asjadnaqvi/stata-joyplot) ![version](https://img.shields.io/github/v/release/asjadnaqvi/stata-joyplot) ![release](https://img.shields.io/github/release-date/asjadnaqvi/stata-joyplot)
 
+---
 
-# joyplot v1.6
+[Installation](#Installation) | [Syntax](#Syntax) | [Examples](#Examples) | [Feedback](#Feedback) | [Change log](#Change-log)
 
+---
+
+
+# joyplot v1.61
 
 
 This package provides the ability to draw joyplot or ridgeline plots in Stata. It is based on the [Joyplot Guide](https://medium.com/the-stata-guide/covid-19-visualizations-with-stata-part-8-joy-plots-ridge-line-plots-dbe022e7264d) that I released in October 2020.
@@ -17,7 +22,7 @@ The package (**v1.6**) is available on SSC and can be installed as follows:
 ssc install joyplot, replace
 ```
 
-Or it can be installed from GitHub (**v1.6**):
+Or it can be installed from GitHub (**v1.61**):
 
 ```
 net install joyplot, from("https://raw.githubusercontent.com/asjadnaqvi/stata-joyplot/main/installation/") replace
@@ -51,7 +56,7 @@ graph set window fontface "Arial Narrow"
 
 ## Syntax
 
-The syntax for v1.6 is as follows:
+The syntax for v1.61 is as follows:
 
 ```
 joyplot y [x] [if] [in], over(variable) 
@@ -398,7 +403,11 @@ joyplot socMob year, over(country) overlap(1) droplow rescale   ///
 Please open an [issue](https://github.com/asjadnaqvi/stata-joyplot/issues) to report errors, feature enhancements, and/or other requests. 
 
 
-## Versions
+## Change log
+
+**v1.61 (01 Mar 2023)**
+- Fixed a bug where y-labels were reversed.
+- Fixed a bug where `norm()` was not passing correctly to densities.
 
 **v1.6 (05 Nov 2022)**
 - `color` renamed to `palette` to align it with the other packages
