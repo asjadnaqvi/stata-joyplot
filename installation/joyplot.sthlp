@@ -1,7 +1,7 @@
 {smcl}
-{* 05November2022}{...}
+{* 01Mar2023}{...}
 {hi:help joyplot}{...}
-{right:{browse "https://github.com/asjadnaqvi/stata-joyplot":joyplot v1.6 (GitHub)}}
+{right:{browse "https://github.com/asjadnaqvi/stata-joyplot":joyplot v1.61 (GitHub)}}
 
 {hline}
 
@@ -147,8 +147,8 @@ use "https://github.com/asjadnaqvi/The-Stata-Guide/blob/master/data/OWID_data.dt
 
 {title:Package details}
 
-Version      : {bf:joyplot} v1.6
-This release : 05 Nov 2022
+Version      : {bf:joyplot} v1.61
+This release : 01 Mar 2022
 First release: 13 Dec 2021
 Repository   : {browse "https://github.com/asjadnaqvi/joyplot":GitHub}
 Keywords     : Stata, graph, joyplot, ridgeline plot
@@ -168,8 +168,10 @@ John Chin and {it:van-alfen}(GitHub) suggested several enhancements to the code.
 
 Please submit bugs, errors, feature requests on {browse "https://github.com/asjadnaqvi/stata-joyplot/issues":GitHub} by opening a new issue.
 
-{title:References}
+{title:Other data visualization packages}
 
-{p 4 8 2}Jann, B. (2018). {browse "https://www.stata-journal.com/article.html?article=gr0075":Color palettes for Stata graphics}. The Stata Journal 18(4): 765-785.
+{psee}
+    {helpb alluvial}, {helpb circlebar}, {helpb spider}, {helpb treemap}, {helpb circlepack}, {helpb arcplot}, {helpb treecluster}, {helpb sunburst}
+	{helpb marimekko}, {helpb bimap}, {helpb joyplot}, {helpb streamplot}, {helpb delaunay}, {helpb clipgeo}, {helpb schemepack}, {helpb sankey}
 
 

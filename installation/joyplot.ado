@@ -1,6 +1,8 @@
-*! Joyplot v1.5 03 Sep 2022
+*! Joyplot v1.61 (01 Mar 2023)
 *! Asjad Naqvi (asjadnaqvi@gmail.com)
 
+* v1.61 01 Mar 2023: ylabel in densities fixed. normalize in densities fixed.
+* v1.6  05 Nov 2022: bug fixes
 * v1.5  03 Sep 2022: bandwidth fixed. xlabel is now passthru. defaults updated.
 * v1.42 22 Jun 2022: y-axis was bugged in the over plot
 * v1.41 20 Jun 2022: installations fix, numerical over fix.
@@ -24,7 +26,7 @@
 cap program drop joyplot
 
 
-program joyplot, rclass  // sortpreserve
+program joyplot, rclass sortpreserve
 
 version 15
  
@@ -113,7 +115,7 @@ qui {
 	
 	count
 	if r(N) == 0 {
-		di as error "No groups fulfill the criteria."
+		di as error "No groups fulfill the criteria for {stata help joyplot:joyplot}."
 		exit
 	}
 	
@@ -392,6 +394,8 @@ preserve
 		local over `over2' 
 	}
 	
+	*gen test1 = `over2'
+	
 			
 	if "`yreverse'" != "" {
 					
@@ -452,7 +456,7 @@ preserve
 	
 	// normalization 
 
-	if "`normglobal'" != ""   {
+	if "`normalize'" == "" | "`normalize'" == "global"  {
 	
 		levelsof `over', local(lvls)
 		
@@ -461,7 +465,7 @@ preserve
 		}
 	}	
 		
-	else  {
+	if "`normalize'" == "local"  {
 	
 		levelsof `over', local(lvls)
 		
@@ -524,6 +528,10 @@ preserve
 		replace `ytop`x'' = `ytop`x'' - `shift'	
 	}
 	
+
+	
+	
+	// draw
 	
 	levelsof `over', local(lvls)
 	local items = `r(r)'
@@ -545,7 +553,7 @@ preserve
 			
 		}	
 			
-		qui replace `ypoint' = (`ybot`newx'' + 0.02) if `tag'==1 & `over'==`newx'	
+		qui replace `ypoint' = (`ybot`newx'' + 0.02) if `tag'==1 & `over'==`x'	
 		
 		if "`yline'" != "" {
 			
@@ -583,6 +591,7 @@ preserve
 		
 	restore			
 	}
+
 }
 
 
