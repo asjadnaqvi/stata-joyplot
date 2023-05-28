@@ -7,7 +7,7 @@
 ---
 
 
-# joyplot v1.61
+# joyplot v1.62
 
 
 This package provides the ability to draw joyplot or ridgeline plots in Stata. It is based on the [Joyplot Guide](https://medium.com/the-stata-guide/covid-19-visualizations-with-stata-part-8-joy-plots-ridge-line-plots-dbe022e7264d) that I released in October 2020.
@@ -22,7 +22,7 @@ The package (**v1.61**) is available on SSC and can be installed as follows:
 ssc install joyplot, replace
 ```
 
-Or it can be installed from GitHub (**v1.61**):
+Or it can be installed from GitHub (**v1.62**):
 
 ```
 net install joyplot, from("https://raw.githubusercontent.com/asjadnaqvi/stata-joyplot/main/installation/") replace
@@ -56,10 +56,10 @@ graph set window fontface "Arial Narrow"
 
 ## Syntax
 
-The syntax for v1.61 is as follows:
+The syntax for v1.62 is as follows:
 
 ```
-joyplot y [x] [if] [in], over(variable) 
+joyplot y [x] [if] [in], by(variable) 
 		[ overlap(num) bwidth(num) palette(str) alpha(num) norm(local|global) lines lwidth(num) lcolor(str)
 		rescale droplow ylabsize(num) ylabcolor(str) ylabposition(str) offset(num) 
 		yline(str) ylinecolor(str) ylinewith(str) ylinepattern(str)
@@ -72,13 +72,13 @@ See the help file `help joyplot` for details.
 The most basic use is as follows:
 
 ```
-joyplot y x, over(variable)
+joyplot y x, by(variable)
 ```
 
 or
 
 ```
-joyplot y, over(variable)
+joyplot y, by(variable)
 ```
 
 
@@ -108,14 +108,14 @@ keep country date new_cases
 We can generate basic graphs as follows:
 
 ```
-joyplot new_cases date if date > 22460, over(country) 
+joyplot new_cases date if date > 22460, by(country) 
 ```
 
 <img src="/figures/joyplot1.png" height="600">
 
 
 ```
-joyplot new_cases date if date > 22460, over(country) norm(local)
+joyplot new_cases date if date > 22460, by(country) norm(local)
 ```
 
 <img src="/figures/joyplot1_0.png" height="600">
@@ -123,71 +123,71 @@ joyplot new_cases date if date > 22460, over(country) norm(local)
 
 
 ```
-joyplot new_cases date if date > 22460, over(country) yline bwid(0.1) norm(local)
+joyplot new_cases date if date > 22460, by(country) yline bwid(0.1) norm(local)
 ```
 
 <img src="/figures/joyplot1_1.png" height="600">
 
 
 ```
-joyplot new_cases date if date > 22460, over(country) alpha(100) bwid(0.1) norm(local)
+joyplot new_cases date if date > 22460, by(country) alpha(100) bwid(0.1) norm(local)
 ```
 
 <img src="/figures/joyplot1_2.png" height="600">
 
 ```
-joyplot new_cases date if date > 22460, over(country) lc(black) palette(white) alpha(100) norm(local)
+joyplot new_cases date if date > 22460, by(country) lc(black) palette(white) alpha(100) norm(local)
 ```
 
 <img src="/figures/joyplot1_3.png" height="600">
 
 
 ```
-joyplot new_cases date if date > 22460, over(country) lc(white) palette(black) alpha(50) lw(0.05) bwid(0.1) norm(local)
+joyplot new_cases date if date > 22460, by(country) lc(white) palette(black) alpha(50) lw(0.05) bwid(0.1) norm(local)
 ```
 
 <img src="/figures/joyplot1_4.png" height="600">
 
 ```
-joyplot new_cases date if date > 22460, over(country) lines lw(0.2) bwid(0.1) norm(local)
+joyplot new_cases date if date > 22460, by(country) lines lw(0.2) bwid(0.1) norm(local)
 ```
 
 <img src="/figures/joyplot1_5.png" height="600">
 
 ```
-joyplot new_cases date if date > 22460, over(country) lines lw(0.2) palette(black) bwid(0.1) norm(local)
+joyplot new_cases date if date > 22460, by(country) lines lw(0.2) palette(black) bwid(0.1) norm(local)
 ```
 
 <img src="/figures/joyplot1_6.png" height="600">
 
 ```
-joyplot new_cases date if date > 22460, over(country) lines lw(0.2) bwid(0.1) color(black)
+joyplot new_cases date if date > 22460, by(country) lines lw(0.2) bwid(0.1) color(black)
 ```
 
 <img src="/figures/joyplot1_6.png" height="600">
 
 ```
-joyplot new_cases date if date > 22460, over(country) lines lw(0.2) bwid(0.1) ylabpos(right) norm(local)
+joyplot new_cases date if date > 22460, by(country) lines lw(0.2) bwid(0.1) ylabpos(right) norm(local)
 ```
 
 <img src="/figures/joyplot1_7.png" height="600">
 
 
 ```
-joyplot new_cases date if date > 22460, over(country) lw(0.2) bwid(0.1) ylabpos(right) xsize(5) ysize(7) norm(local)
+joyplot new_cases date if date > 22460, by(country) lw(0.2) bwid(0.1) ylabpos(right) xsize(5) ysize(7) norm(local)
 ```
 
 <img src="/figures/joyplot1_8.png" height="600">
 
 
 ```
-joyplot new_cases date if date > 22460, over(country) bwid(0.1) yrev norm(local)
+joyplot new_cases date if date > 22460, by(country) bwid(0.1) yrev norm(local)
 ```
 
 <img src="/figures/joyplot1_9.png" height="600">
 
 ```
-joyplot new_cases date if date > 22460, over(country) bwid(0.1) yrev xrev offset(20) norm(local)
+joyplot new_cases date if date > 22460, by(country) bwid(0.1) yrev xrev offset(20) norm(local)
 ```
 
 <img src="/figures/joyplot1_10.png" height="600">
@@ -196,25 +196,25 @@ joyplot new_cases date if date > 22460, over(country) bwid(0.1) yrev xrev offset
 ### Normalization
 
 ```
-joyplot new_cases date if date > 22460, over(country) bwid(0.1) norm(local)
+joyplot new_cases date if date > 22460, by(country) bwid(0.1) norm(local)
 ```
 
 <img src="/figures/joyplot2.png" height="600">
 
 ```
-joyplot new_cases date if date > 22460, over(country) bwid(0.1) overlap(15) norm(local)
+joyplot new_cases date if date > 22460, by(country) bwid(0.1) overlap(15) norm(local)
 ```
 
 <img src="/figures/joyplot2_1.png" height="600">
 
 ```
-joyplot new_cases date if date > 22460, over(country) bwid(0.1) overlap(15) lines norm(local)
+joyplot new_cases date if date > 22460, by(country) bwid(0.1) overlap(15) lines norm(local)
 ```
 
 <img src="/figures/joyplot2_2.png" height="600">
 
 ```
-joyplot new_cases date if date > 22460, over(country) bwid(0.1) off(-20) overlap(10) lw(none) norm(local)
+joyplot new_cases date if date > 22460, by(country) bwid(0.1) off(-20) overlap(10) lw(none) norm(local)
 ```
 
 <img src="/figures/joyplot3.png" height="600">
@@ -229,7 +229,7 @@ local xmin = r(min)
 local xmax = r(max)
 
 
-joyplot new_cases date if date > 22460, over(country) overlap(8) bwid(0.1) palette(CET C1) alpha(100) ///
+joyplot new_cases date if date > 22460, by(country) overlap(8) bwid(0.1) palette(CET C1) alpha(100) ///
 	lc(white) lw(0.2) xlabel(`xmin'(60)`xmax') off(-30)  norm(local) ///
 	xtitle("Date") ytitle("Countries") ///
 	title("{fontface Arial Bold:My joyplot}") subtitle("Some more text here")  ///
@@ -247,7 +247,7 @@ qui summ date if date > 22460
 local xmin = r(min)
 local xmax = r(max)
 	
-joyplot new_cases date if date > 22460, over(country) overlap(8) bwid(0.1) palette(CET C1) alpha(90) ///
+joyplot new_cases date if date > 22460, by(country) overlap(8) bwid(0.1) palette(CET C1) alpha(90) ///
 	lc(black) lw(0.1) xlabel(`xmin'(60)`xmax') off(-30)  norm(local) ///
 	ylabc(white) /// 
 	xtitle("Date") ytitle("Countries") ///
@@ -266,7 +266,7 @@ qui summ date if date > 22425
 local xmin = r(min)
 local xmax = r(max)
 	
-joyplot new_cases date if date > 22425, over(country) overlap(8) bwid(0.1) palette(black) alpha(100) norm(local)  ///
+joyplot new_cases date if date > 22425, by(country) overlap(8) bwid(0.1) palette(black) alpha(100) norm(local)  ///
 	lc(white) lw(0.2) xlabel(none) off(+20) ///
 	ylabc(none)   /// 
 	xtitle("") ytitle("") ///
@@ -288,32 +288,32 @@ lab val month month
 ```
 
 ```
-joyplot meantemp, over(month)  
+joyplot meantemp, by(month)  
 ```
 
 <img src="/figures/joyplot7_0.png" height="600">
 
 
 ```
-joyplot meantemp, over(month) yline bwid(1.2)
+joyplot meantemp, by(month) yline bwid(1.2)
 ```
 
 <img src="/figures/joyplot7_1.png" height="600">
 
 ```
-joyplot meantemp, over(month) yline yrev  bwid(1.2)
+joyplot meantemp, by(month) yline yrev  bwid(1.2)
 ```
 
 <img src="/figures/joyplot7_2.png" height="600">
 
 ```
-joyplot meantemp, over(month) yline ylw(0.2) ylc(blue) ylp(dot) ylabpos(right) bwid(1.2)
+joyplot meantemp, by(month) yline ylw(0.2) ylc(blue) ylp(dot) ylabpos(right) bwid(1.2)
 ```
 
 <img src="/figures/joyplot7_3.png" height="600">
 
 ```
-joyplot meantemp, over(month) bwid(1.5) ylabs(3) overlap(3) yline yrev palette(CET C6) ///
+joyplot meantemp, by(month) bwid(1.5) ylabs(3) overlap(3) yline yrev palette(CET C6) ///
 	xlabel(-20(10)30) ///
 	ytitle("Month") xtitle("degrees Centigrade") ///
 	title("Mean average temperature in the USA") subtitle("2009-2020 average") ///
@@ -329,7 +329,7 @@ qui summ meantemp
 local xmin = r(min)
 local xmax = r(max)
 
-joyplot meantemp, over(month) bwid(1.5) ylabs(3) overlap(3) yline palette(scico corkO) alpha(100) ///
+joyplot meantemp, by(month) bwid(1.5) ylabs(3) overlap(3) yline palette(scico corkO) alpha(100) ///
 	ytitle("Month") xtitle("degrees Centigrade") xlabel(`xmin'(5)`xmax') ///
 	title("Mean average temperature in the USA") subtitle("2009-2020 average") ///
 	note("Source: World Bank Climate Change Knowledge Portal (CCKP).", size(vsmall)) ///
@@ -353,7 +353,7 @@ tab country
 Do a vanilla joyplot:
 
 ```
-joyplot socMob year, over(country)  ///
+joyplot socMob year, by(country)  ///
 	lc(white) lw(0.2) xlabel(1990(5)2020) 
 ```
 
@@ -362,7 +362,7 @@ Get rid of the overlaps. Here `overlap(1)` gives each country it's own box:
 <img src="/figures/joyplot8_0.png" height="600">
 
 ```
-joyplot socMob year, over(country) overlap(1) rescale  ///
+joyplot socMob year, by(country) overlap(1) rescale  ///
 	lc(white) lw(0.2) xlabel(1990(5)2020) 
 ```
 
@@ -373,14 +373,14 @@ Let's make a country unusable:
 ```
 drop if year < 2015 & country=="Vietnam"	
 
-joyplot socMob year, over(country) overlap(1)     ///
+joyplot socMob year, by(country) overlap(1)     ///
 	lc(white) lw(0.2)  off(-2) xlabel(1990(5)2020) 
 ```
 
 The above code will produce an error message, highlighting where the errors exist. Let's throw these out using the `droplow` option:
 
 ```
-joyplot socMob year, over(country) overlap(1) droplow   ///
+joyplot socMob year, by(country) overlap(1) droplow   ///
 	lc(white) lw(0.2)  off(-2) xlabel(1990(5)2020) 
 ```
 
@@ -389,7 +389,7 @@ joyplot socMob year, over(country) overlap(1) droplow   ///
 And we rescale the data further to the minimum and maximum values:
 
 ```
-joyplot socMob year, over(country) overlap(1) droplow rescale   ///
+joyplot socMob year, by(country) overlap(1) droplow rescale   ///
 	lc(white) lw(0.2)  off(-2) xlabel(1990(5)2020) 
 ```
 
@@ -404,6 +404,12 @@ Please open an [issue](https://github.com/asjadnaqvi/stata-joyplot/issues) to re
 
 
 ## Change log
+
+**v1.62 (28 May 2023)**
+- Changed `over()` to `by()` to align it with other similar packages: `streamplot`, `bumpline`, `bumparea`.
+- Added `laboffset()` to displace labels in pixels.
+- Added `offset()` to extend the x-axis.
+- Minor fixes to code, help file, and updates to defaults.
 
 **v1.61 (01 Mar 2023)**
 - Fixed a bug where y-labels were reversed.

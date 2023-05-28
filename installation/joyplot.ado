@@ -1,17 +1,18 @@
-*! Joyplot v1.61 (01 Mar 2023)
+*! Joyplot v1.62 (28 May 2023)
 *! Asjad Naqvi (asjadnaqvi@gmail.com)
 
-* v1.61 01 Mar 2023: ylabel in densities fixed. normalize in densities fixed.
-* v1.6  05 Nov 2022: bug fixes
-* v1.5  03 Sep 2022: bandwidth fixed. xlabel is now passthru. defaults updated.
-* v1.42 22 Jun 2022: y-axis was bugged in the over plot
-* v1.41 20 Jun 2022: installations fix, numerical over fix.
-* v1.4  26 Apr 2022: axes reverse options added. various optimizations
-* v1.3  24 Apr 2022: stacked densities added. label placement optimized. 
-* v1.21 15 Apr 2022: xsize/ysize added. ylabels on right option added.
-* v1.2  13 Apr 2022: xlabel angle, local normalization, lines only option added
-* v1.1  07 Apr 2022: several options added
-* v1.0  13 Dec 2021: first release
+* v1.62 (28 May 2023): change over() to by() to align it with other packages. added offset() and laboffset()
+* v1.61 (01 Mar 2023): ylabel in densities fixed. normalize in densities fixed.
+* v1.6  (05 Nov 2022): bug fixes
+* v1.5  (03 Sep 2022): bandwidth fixed. xlabel is now passthru. defaults updated.
+* v1.42 (22 Jun 2022): y-axis was bugged in the over plot
+* v1.41 (20 Jun 2022): installations fix, numerical over fix.
+* v1.4  (26 Apr 2022): axes reverse options added. various optimizations
+* v1.3  (24 Apr 2022): stacked densities added. label placement optimized. 
+* v1.21 (15 Apr 2022): xsize/ysize added. ylabels on right option added.
+* v1.2  (13 Apr 2022): xlabel angle, local normalization, lines only option added
+* v1.1  (07 Apr 2022): several options added
+* v1.0  (13 Dec 2021): first release
 
 **********************************
 * Step-by-step guide on Medium   *
@@ -30,12 +31,13 @@ program joyplot, rclass sortpreserve
 
 version 15
  
-	syntax varlist(min=1 max=2 numeric) [if] [in], over(varname) [overlap(real 6) BWIDth(real 0.5) palette(string) alpha(real 80) OFFset(real 0) lines		] ///
+	syntax varlist(min=1 max=2 numeric) [if] [in], by(varname) [overlap(real 6) BWIDth(real 0.5) palette(string) alpha(real 80)  lines		] ///
 		[ LColor(string) LWidth(string) YLABColor(string) YLABSize(real 1.7) YLABPOSition(string) 									] ///
 		[ YLine YLColor(string) YLPattern(string) YLWidth(real 0.04) YREVerse XREVerse 												] ///
 		[ xtitle(passthru) ytitle(passthru) xlabel(passthru) title(passthru) subtitle(passthru) note(passthru)	     				] ///
 		[ scheme(passthru) name(passthru) aspect(passthru) xsize(passthru) ysize(passthru)											] ///
-		[ NORMalize(str) rescale droplow 		 ]  // v1.6 options
+		[ NORMalize(str) rescale droplow 		 ] ///  // v1.6 options
+		[ LABOFFset(real 0) OFFset(real 15) ]   // v1.62 options
 		
 		
 	// check dependencies
@@ -95,16 +97,16 @@ qui {
 	keep if `touse'
 	
 	gen ones = 1
-	bysort `over': egen counts = sum(ones)
-	egen tag = tag(`over')
+	bysort `by': egen counts = sum(ones)
+	egen tag = tag(`by')
 	summ counts, meanonly
 	 
 	if r(min) < 10 {
 		if "`droplow'" == "" {	
 			count if counts < 10 & tag==1
 			di as error "Groups with errors:"
-			noi list `over' if counts < 10 & tag==1
-			di as error "`r(N)' over group(s) (`over') have fewer than 10 observations. Either clean them manually or use the {it:droplow} option to automatically filter them out."
+			noi list `by' if counts < 10 & tag==1
+			di as error "`r(N)' over group(s) (`by') have fewer than 10 observations. Either clean them manually or use the {it:droplow} option to automatically filter them out."
 			exit
 		}	
 		else {
@@ -122,9 +124,9 @@ qui {
 
 	drop ones tag counts
 	
-	sort `over' `xvar' 
+	sort `by' `xvar' 
 	cap drop _fillin
-	fillin `over' `xvar' 
+	fillin `by' `xvar' 
 		
 	*cap drop if _fillin==1
 	cap drop _fillin
@@ -135,39 +137,39 @@ qui {
 	replace `myvar' = . if `myvar' < 0   // TODO: see how to deal with negative values. v1.6: Suggest rescale option
 	
 	
-	cap confirm numeric var `over'
+	cap confirm numeric var `by'
 		if _rc!=0 {
 			tempvar over2
-			encode `over', gen(`over2')
-			local over `over2' 
+			encode `by', gen(`over2')
+			local by `over2' 
 		}
 		else {
 			tempvar tempov over2
-			egen   `over2' = group(`over')
+			egen   `over2' = group(`by')
 			
-			if "`: value label `over''" != "" {
-				decode `over', gen(`tempov')		
+			if "`: value label `by''" != "" {
+				decode `by', gen(`tempov')		
 				labmask `over2', val(`tempov')
 			}
-			local over `over2' 
+			local by `over2' 
 		}
 	
 		
 	if "`yreverse'" != "" {
 					
-		clonevar over2 = `over'
+		clonevar over2 = `by'
 		
-		summ `over', meanonly
-		replace `over' = r(max) - `over' + 1
+		summ `by', meanonly
+		replace `by' = r(max) - `by' + 1
 		
 		if "`: value label over2'" != "" {
 			tempvar group2
 			decode over2, gen(`group2')			
 			replace `group2' = string(over2) if `group2'==""
-			labmask `over', val(`group2')
+			labmask `by', val(`group2')
 		}
 		else {
-			labmask `over', val(over2)
+			labmask `by', val(over2)
 		}
 	}	
 	
@@ -197,21 +199,21 @@ qui {
 	
 	if "`normalize'" == "global" |  "`normalize'" == ""  {
 	
-		levelsof `over', local(lvls)
+		levelsof `by', local(lvls)
 		
 		foreach x of local lvls {
 			 summ `myvar', meanonly
-			 replace `norm' = `myvar' / r(max) if `over'==`x'
+			 replace `norm' = `myvar' / r(max) if `by'==`x'
 		}
 	}	
 		
 	else  {
 	
-		levelsof `over', local(lvls)
+		levelsof `by', local(lvls)
 		
 		foreach x of local lvls {
-			 summ `myvar' if `over'==`x', meanonly
-			 replace `norm' = `myvar' / r(max) if `over'==`x'
+			 summ `myvar' if `by'==`x', meanonly
+			 replace `norm' = `myvar' / r(max) if `by'==`x'
 		}
 	}
 
@@ -224,16 +226,16 @@ qui {
 	gen `xpoint' = .
 	gen `y0' = 0
 	
-	egen `tag' = tag(`over')
+	egen `tag' = tag(`by')
 	
 	
 	if ("`ylabposition'" == "") | ("`ylabposition'" == "left")  {
 		qui summ `xvar', meanonly
-		replace `xpoint' = r(min) - ((r(max) - r(min)) * 0.10) + `offset' if `tag'==1
+		replace `xpoint' = r(min) - ((r(max) - r(min)) * 0.10) + `laboffset' if `tag'==1
 	}
 	if ("`ylabposition'" == "right")  {	
 		qui summ `xvar', meanonly
-		replace `xpoint' = r(max) + ((r(max) - r(min)) * 0.01) + `offset' if `tag'==1
+		replace `xpoint' = r(max) + ((r(max) - r(min)) * 0.01) + `laboffset' if `tag'==1
 	}
 	
 	
@@ -243,18 +245,18 @@ qui {
 	local yli
 	
 	
-	levelsof `over', local(lvls)
+	levelsof `by', local(lvls)
 	local items = `r(r)'
 
 	foreach x of local lvls {
 
 
-	summ `over', meanonly
+	summ `by', meanonly
 	local newx = r(max) + 1 - `x'   
 
 	tempvar y`newx'
 	
-    lowess `norm' `xvar' if `over'==`newx', bwid(`bwidth') gen(`y`newx'') nograph
+    lowess `norm' `xvar' if `by'==`newx', bwid(`bwidth') gen(`y`newx'') nograph
     
     tempvar ybot`newx' ytop`newx'
 	
@@ -266,7 +268,7 @@ qui {
 	summ `ybot1', meanonly
 	local shift = r(mean)
 	
-	levelsof `over', local(lvls)
+	levelsof `by', local(lvls)
 	
 	foreach x of local lvls {
 		replace `ybot`x'' = `ybot`x'' - `shift'
@@ -275,13 +277,13 @@ qui {
 	}	
 	
 	
-	levelsof `over', local(lvls)
+	levelsof `by', local(lvls)
 	local items = `r(r)'
 
 	foreach x of local lvls {
 
 
-		summ `over', meanonly
+		summ `by', meanonly
 		local newx = r(max) + 1 - `x'   
 	
 		if "`lines'" != "" {
@@ -294,10 +296,10 @@ qui {
 			
 		}	
 		
-		replace `ypoint' = (`ybot`newx'' + 0.02) if `tag'==1 & `over'==`newx'	
+		replace `ypoint' = (`ybot`newx'' + 0.02) if `tag'==1 & `by'==`newx'	
 		
 		if "`yline'" != "" {
-			local yli `yli' (line `ybot`newx'' `xvar' if `over'==`newx', lp(`ylpattern') lc(`ylcolor') lw(`ylwidth')) ||
+			local yli `yli' (line `ybot`newx'' `xvar' if `by'==`newx', lp(`ylpattern') lc(`ylcolor') lw(`ylwidth')) ||
 			
 		}
 	
@@ -306,21 +308,21 @@ qui {
 	
 	if "`ylabposition'" == "" | "`ylabposition'" == "left" {
 		summ `xvar', meanonly
-		local x1 = r(min) - ((r(max) - r(min)) * 0.12) + `offset'
+		local x1 = r(min) - ((r(max) - r(min)) * (`offset' / 100)) + `laboffset'
 		local x2 = r(max)
 	}
 	
 	if "`ylabposition'" == "right"  {
 		summ `xvar', meanonly
 		local x1 = r(min) 
-		local x2 = r(max) + ((r(max) - r(min)) * 0.12)  + `offset'
+		local x2 = r(max) + ((r(max) - r(min)) * (`offset' / 100))  + `laboffset'
 	
 	}
 	
 	twoway  		///
 		`yli'		///
 		`mygraph'  	///
-		(scatter `ypoint' `xpoint', mcolor(none) mlabcolor(`ylabcolor') mlabel(`over') mlabsize(`ylabsize') ) ///
+		(scatter `ypoint' `xpoint', mcolor(none) mlabcolor(`ylabcolor') mlabel(`by') mlabsize(`ylabsize') ) ///
 		, ///
 			`xlabel' xscale(range(`x1' `x2')) `xreverse' ///
 			ylabel(, nolabels noticks nogrid) yscale(noline) ///
@@ -348,16 +350,16 @@ preserve
 	keep if `touse'
 	
 	gen ones = 1
-	bysort `over': egen counts = sum(ones)
-	egen tag = tag(`over')
+	bysort `by': egen counts = sum(ones)
+	egen tag = tag(`by')
 	summ counts, meanonly
 	 
 	if r(min) < 10 {
 		if "`droplow'" == "" {	
 			count if counts < 10 & tag==1
 			di as error "Groups with errors:"
-			noi list `over' if counts < 10 & tag==1
-			di as error "`r(N)' over group(s) (`over') have fewer than 10 observations. Either clean them manually or use the {it:droplow} option to automatically filter them out."
+			noi list `by' if counts < 10 & tag==1
+			di as error "`r(N)' over group(s) (`by') have fewer than 10 observations. Either clean them manually or use the {it:droplow} option to automatically filter them out."
 			exit
 		}	
 		else {
@@ -376,19 +378,19 @@ preserve
 
 	// finetune the over variable
 	
-	cap confirm numeric var `over'
+	cap confirm numeric var `by'
 
 	if _rc!=0 {  // if string
 		tempvar over2
-		encode `over', gen(`over2')
+		encode `by', gen(`over2')
 		local over `over2' 
 	}
 	else {
 		tempvar tempov over2
-		egen   `over2' = group(`over')
+		egen   `over2' = group(`by')
 		
-		if "`: value label `over''" != "" {
-			decode `over', gen(`tempov')		
+		if "`: value label `by''" != "" {
+			decode `by', gen(`tempov')		
 			labmask `over2', val(`tempov')
 		}
 		local over `over2' 
@@ -399,19 +401,19 @@ preserve
 			
 	if "`yreverse'" != "" {
 					
-		clonevar over2 = `over'
+		clonevar over2 = `by'
 		
-		summ `over', meanonly
-		replace `over' = r(max) - `over' + 1
+		summ `by', meanonly
+		replace `by' = r(max) - `by' + 1
 		
 		if "`: value label over2'" != "" {
 			tempvar group2
 			decode over2, gen(`group2')			
 			replace `group2' = string(over2) if `group2'==""
-			labmask `over', val(`group2')
+			labmask `by', val(`group2')
 		}
 		else {
-			labmask `over', val(over2)
+			labmask `by', val(over2)
 		}
 	}		
 		
@@ -427,16 +429,16 @@ preserve
 	local xrmax = r(max)
 	
 	
-	levelsof `over', local(lvls) 
+	levelsof `by', local(lvls) 
 	local items = `r(r)'
 	
 	foreach x of local lvls {
 		
 
-		summ `over', meanonly
+		summ `by', meanonly
 		local newx = r(max) + 1 - `x'   // reverse the sorting
 
-		kdensity `varlist' if `over'==`x', generate(x`newx' y`newx') bwid(`bwidth') nograph
+		kdensity `varlist' if `by'==`x', generate(x`newx' y`newx') bwid(`bwidth') nograph
 		
 		summ y`newx', meanonly
 		if r(max) > `dmax' local dmax = r(max)   // global max
@@ -457,7 +459,7 @@ preserve
 	// normalization 
 	if "`normalize'" == "" | "`normalize'" == "global"  {
 	
-		levelsof `over', local(lvls)
+		levelsof `by', local(lvls)
 		
 		foreach x of local lvls {
 			 replace y`x' = y`x' / `dmax' 
@@ -466,7 +468,7 @@ preserve
 		
 	if "`normalize'" == "local"  {
 	
-		levelsof `over', local(lvls)
+		levelsof `by', local(lvls)
 		
 		foreach x of local lvls {
 			 summ y`x', meanonly
@@ -481,7 +483,7 @@ preserve
 	gen `xpoint' = .
 	gen `y0' = 0
 	
-	egen `tag' = tag(`over')
+	egen `tag' = tag(`by')
 	
 	
 	if ("`ylabposition'" == "") | ("`ylabposition'" == "left") {
@@ -498,12 +500,12 @@ preserve
 	local yli
 	
 	
-	levelsof `over', local(lvls)
+	levelsof `by', local(lvls)
 	local items = `r(r)'
 
 	foreach x of local lvls {
 
-		summ `over', meanonly
+		summ `by', meanonly
 		local newx = r(max) + 1 - `x'   
 
 		
@@ -518,7 +520,7 @@ preserve
 	summ `ybot1', meanonly
 	local shift = r(mean)
 	
-	levelsof `over', local(lvls)
+	levelsof `by', local(lvls)
 	
 	foreach x of local lvls {
 		replace `ybot`x'' = `ybot`x'' - `shift'
@@ -527,14 +529,14 @@ preserve
 	
 
 	
-	levelsof `over', local(lvls)
+	levelsof `by', local(lvls)
 	local items = `r(r)'
 
 	
 	foreach x of local lvls {
 
 
-		summ `over', meanonly
+		summ `by', meanonly
 		local newx = r(max) + 1 - `x'   	
 		
 		if "`lines'" != "" {
@@ -547,7 +549,7 @@ preserve
 			
 		}	
 			
-		qui replace `ypoint' = (`ybot`newx'' + 0.02) if `tag'==1 & `over'==`x'	
+		qui replace `ypoint' = (`ybot`newx'' + 0.02) if `tag'==1 & `by'==`x'	
 		
 		if "`yline'" != "" {
 			
@@ -574,7 +576,7 @@ preserve
 	twoway  ///
 		`yli'	   ///
 		`mygraph'  ///
-		(scatter `ypoint' `xpoint', mcolor(none) mlabcolor(`ylabcolor') mlabel(`over') mlabsize(`ylabsize') ) ///
+		(scatter `ypoint' `xpoint', mcolor(none) mlabcolor(`ylabcolor') mlabel(`by') mlabsize(`ylabsize') ) ///
 		, ///
 			`xlabel' xscale(range(`x1' `x2'))  ///  
 			ylabel(, nolabels noticks nogrid) yscale(noline) ///
