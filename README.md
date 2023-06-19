@@ -8,7 +8,7 @@
 
 
 # joyplot v1.62
-
+(28 May 2023)
 
 This package provides the ability to draw joyplot or ridgeline plots in Stata. It is based on the [Joyplot Guide](https://medium.com/the-stata-guide/covid-19-visualizations-with-stata-part-8-joy-plots-ridge-line-plots-dbe022e7264d) that I released in October 2020.
 
@@ -17,7 +17,7 @@ This package provides the ability to draw joyplot or ridgeline plots in Stata. I
 
 The package can be installed via SSC or GitHub. The GitHub version, *might* be more recent due to bug fixes, feature updates etc, and *may* contain syntax improvements and changes in *default* values. See version numbers below. Eventually the GitHub version is published on SSC.
 
-The package (**v1.61**) is available on SSC and can be installed as follows:
+The package (**v1.62**) is available on SSC and can be installed as follows:
 ```
 ssc install joyplot, replace
 ```
