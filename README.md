@@ -1,4 +1,3 @@
-
 ![joyplot-1](https://github.com/asjadnaqvi/stata-joyplot/assets/38498046/b66818fe-38c7-4cd8-9f6c-cd2f62f3c0f3)
 
 
@@ -11,8 +10,8 @@
 ---
 
 
-# joyplot v1.62
-(28 May 2023)
+# joyplot v1.7
+(14 Jul 2023)
 
 This package provides the ability to draw joyplot or ridgeline plots in Stata. It is based on the [Joyplot Guide](https://medium.com/the-stata-guide/covid-19-visualizations-with-stata-part-8-joy-plots-ridge-line-plots-dbe022e7264d) that I released in October 2020.
 
@@ -26,7 +25,7 @@ The package (**v1.62**) is available on SSC and can be installed as follows:
 ssc install joyplot, replace
 ```
 
-Or it can be installed from GitHub (**v1.62**):
+Or it can be installed from GitHub (**v1.7**):
 
 ```
 net install joyplot, from("https://raw.githubusercontent.com/asjadnaqvi/stata-joyplot/main/installation/") replace
@@ -60,15 +59,15 @@ graph set window fontface "Arial Narrow"
 
 ## Syntax
 
-The syntax for v1.62 is as follows:
+The syntax for **v1.7** is as follows:
 
 ```
 joyplot y [x] [if] [in], by(variable) 
-		[ overlap(num) bwidth(num) palette(str) alpha(num) norm(local|global) lines lwidth(num) lcolor(str)
-		rescale droplow ylabsize(num) ylabcolor(str) ylabposition(str) offset(num) 
-		yline(str) ylinecolor(str) ylinewith(str) ylinepattern(str)
-		xtitle(str) ytitle(str) yreverse xreverse
-		title(str) subtitle(str) note(str) xsize(num) ysize(num) scheme(str) name(str) ]
+                [ overlap(num) bwidth(num) palette(str) alpha(num) offset(num) lines droplow normalize(local|global) 
+                   rescale offset(num) laboffset(num) lwidth(num) lcolor(str) ylabsize(num) ylabcolor(str) ylabposition(str)
+                   yline ylcolor(str) ylwidth(str) ylpattern(str) xreverse yreverse peaks peaksize(num)
+                   xtitle(str) ytitle(str) title(str) subtitle(str) xlabel(str)note(str) scheme(str) name(str) saving(str) 
+                ]
 ```
 
 See the help file `help joyplot` for details.
@@ -99,11 +98,7 @@ clear
 set scheme white_tableau
 graph set window fontface "Arial Narrow"
 
-use "https://github.com/asjadnaqvi/stata-joyplot/blob/main/data/OWID_data.dta?raw=true", clear
-
-keep if group10==1
-
-keep country date new_cases
+use "https://github.com/asjadnaqvi/stata-joyplot/blob/main/data/OWID_data2.dta?raw=true", clear
 ```
 
 
@@ -125,13 +120,11 @@ joyplot new_cases date if date > 22460, by(country) norm(local)
 <img src="/figures/joyplot1_0.png" height="600">
 
 
-
 ```
 joyplot new_cases date if date > 22460, by(country) yline bwid(0.1) norm(local)
 ```
 
 <img src="/figures/joyplot1_1.png" height="600">
-
 
 ```
 joyplot new_cases date if date > 22460, by(country) alpha(100) bwid(0.1) norm(local)
@@ -140,7 +133,7 @@ joyplot new_cases date if date > 22460, by(country) alpha(100) bwid(0.1) norm(lo
 <img src="/figures/joyplot1_2.png" height="600">
 
 ```
-joyplot new_cases date if date > 22460, by(country) lc(black) palette(white) alpha(100) norm(local)
+joyplot new_cases date if date > 22460, by(country) lc(black) palette(white) alpha(100) bwid(0.1) norm(local)
 ```
 
 <img src="/figures/joyplot1_3.png" height="600">
@@ -164,21 +157,16 @@ joyplot new_cases date if date > 22460, by(country) lines lw(0.2) palette(black)
 
 <img src="/figures/joyplot1_6.png" height="600">
 
-```
-joyplot new_cases date if date > 22460, by(country) lines lw(0.2) bwid(0.1) color(black)
-```
-
-<img src="/figures/joyplot1_6.png" height="600">
 
 ```
-joyplot new_cases date if date > 22460, by(country) lines lw(0.2) bwid(0.1) ylabpos(right) norm(local)
+joyplot new_cases date if date > 22460, by(country) lines lw(0.2) bwid(0.1) ylabpos(right) norm(local) offset(8)
 ```
 
 <img src="/figures/joyplot1_7.png" height="600">
 
 
 ```
-joyplot new_cases date if date > 22460, by(country) lw(0.2) bwid(0.1) ylabpos(right) xsize(5) ysize(7) norm(local)
+joyplot new_cases date if date > 22460, by(country) lw(0.2) bwid(0.1) ylabpos(right) xsize(5) ysize(5) norm(local) offset(10)
 ```
 
 <img src="/figures/joyplot1_8.png" height="600">
@@ -190,8 +178,11 @@ joyplot new_cases date if date > 22460, by(country) bwid(0.1) yrev norm(local)
 
 <img src="/figures/joyplot1_9.png" height="600">
 
+
+Here we reverse both axes, but it is highly advisable not to do so with the x-axis:
+
 ```
-joyplot new_cases date if date > 22460, by(country) bwid(0.1) yrev xrev offset(20) norm(local)
+joyplot new_cases date if date > 22460, by(country) bwid(0.1) yrev xrev norm(local) yline laboff(-20) 
 ```
 
 <img src="/figures/joyplot1_10.png" height="600">
@@ -212,13 +203,13 @@ joyplot new_cases date if date > 22460, by(country) bwid(0.1) overlap(15) norm(l
 <img src="/figures/joyplot2_1.png" height="600">
 
 ```
-joyplot new_cases date if date > 22460, by(country) bwid(0.1) overlap(15) lines norm(local)
+joyplot new_cases date if date > 22460, by(country) bwid(0.1) overlap(12) lines norm(local)
 ```
 
 <img src="/figures/joyplot2_2.png" height="600">
 
 ```
-joyplot new_cases date if date > 22460, by(country) bwid(0.1) off(-20) overlap(10) lw(none) norm(local)
+joyplot new_cases date if date > 22460, by(country) bwid(0.1) off(-20) overlap(10) lw(none)  norm(local)
 ```
 
 <img src="/figures/joyplot3.png" height="600">
@@ -234,10 +225,10 @@ local xmax = r(max)
 
 
 joyplot new_cases date if date > 22460, by(country) overlap(8) bwid(0.1) palette(CET C1) alpha(100) ///
-	lc(white) lw(0.2) xlabel(`xmin'(60)`xmax') off(-30)  norm(local) ///
+	lc(white) lw(0.2) xlabel(`xmin'(120)`xmax') off(-30) norm(local) ///
 	xtitle("Date") ytitle("Countries") ///
-	title("{fontface Arial Bold:My joyplot}") subtitle("Some more text here")  ///
-	note("Some text here", size(vsmall)) 
+	title("{fontface Arial Bold:My joyplot/ridgeline plot}") subtitle("Some more text here")  ///
+	note("Some text here", size(vsmall))  
 ```
 
 <img src="/figures/joyplot4.png" height="600">
@@ -252,7 +243,7 @@ local xmin = r(min)
 local xmax = r(max)
 	
 joyplot new_cases date if date > 22460, by(country) overlap(8) bwid(0.1) palette(CET C1) alpha(90) ///
-	lc(black) lw(0.1) xlabel(`xmin'(60)`xmax') off(-30)  norm(local) ///
+	lc(black) lw(0.1) xlabel(`xmin'(120)`xmax') off(-30)  norm(local) ///
 	ylabc(white) /// 
 	xtitle("Date") ytitle("Countries") ///
 	title("{fontface Arial Bold:My joyplot}") subtitle("a subtitle here", color(white)) ///
@@ -270,14 +261,25 @@ qui summ date if date > 22425
 local xmin = r(min)
 local xmax = r(max)
 	
-joyplot new_cases date if date > 22425, by(country) overlap(8) bwid(0.1) palette(black) alpha(100) norm(local)  ///
-	lc(white) lw(0.2) xlabel(none) off(+20) ///
+joyplot new_cases date if date > 22425, by(country) overlap(10) bwid(0.1) palette(black) alpha(100) norm(local)  ///
+	lc(white) lw(0.2) xlabel(none) laboff(40) ///
 	ylabc(none)   /// 
 	xtitle("") ytitle("") ///
 	title("{fontface Arial Bold:The Joy Division look}") scheme(neon)
 ```
 
 <img src="/figures/joyplot6.png" height="600">
+
+
+### v1.7 options
+
+In v1.7, `joyplot` can be replaced with `ridgeline`, `peaks` can be added to the ridges, and `xline()` has been enabled:
+
+```
+ridgeline new_cases date if date > 22460, by(country) bwid(0.1) off(-20) overlap(8) peaks norm(local) xline(22700 23000)
+```
+
+<img src="/figures/joyplot6_1.png" height="600">
 
 
 ## Single variable
@@ -343,6 +345,19 @@ joyplot meantemp, by(month) bwid(1.5) ylabs(3) overlap(3) yline palette(scico co
 <img src="/figures/joyplot7_5.png" height="600">
 
 
+### v1.7 options
+
+```
+ridgeline meantemp, by(month) bwid(1.5) ylabs(3) overlap(3) lc(black) yline yrev palette(CET C6) ///
+	xlabel(-20(10)30) ///
+	ytitle("Month") xtitle("degrees Centigrade") ///
+	title("Mean average temperature in the USA") subtitle("2009-2020 average") ///
+	note("Source: World Bank Climate Change Knowledge Portal (CCKP).", size(vsmall)) ///
+		xsize(4) ysize(5) xline(-10 0 10) peak peaksize(0.4) // saving(test1)
+```
+
+<img src="/figures/joyplot7_6.png" height="600">
+
 ### Rescale and error checks (v1.6)
 
 Load a dummy data set
@@ -401,13 +416,19 @@ joyplot socMob year, by(country) overlap(1) droplow rescale   ///
 
 
 
-
 ## Feedback
 
 Please open an [issue](https://github.com/asjadnaqvi/stata-joyplot/issues) to report errors, feature enhancements, and/or other requests. 
 
 
 ## Change log
+
+**v1.7 (14 Jul 2023)**
+- `peaks` and `peaksize()` option added to mark highest point on ridges and modify their size. This option is currently beta.
+- `xline()` option added to allow users to plot reference lines on the x-axis (requested by Glenn Harrison).
+- `saving()` option added (requested by Glenn Harrison). 
+- `joyplot` is now fully mirrored by the `ridgeline` command. Several users requested this.
+- Several bug fixes and better arrangement of the helpfile.
 
 **v1.62 (28 May 2023)**
 - Changed `over()` to `by()` to align it with other similar packages: `streamplot`, `bumpline`, `bumparea`.

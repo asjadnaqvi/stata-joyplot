@@ -1,6 +1,7 @@
-*! Joyplot v1.62 (28 May 2023)
+*! joyplot v1.62 (28 May 2023)
 *! Asjad Naqvi (asjadnaqvi@gmail.com)
 
+* v1.7  (14 Jul 2023): xline(), saving(), peaks, peaksize() options added. ridgeline duplicates joyplot.
 * v1.62 (28 May 2023): change over() to by() to align it with other packages. added offset() and laboffset()
 * v1.61 (01 Mar 2023): ylabel in densities fixed. normalize in densities fixed.
 * v1.6  (05 Nov 2022): bug fixes
@@ -27,7 +28,7 @@
 cap program drop joyplot
 
 
-program joyplot, rclass sortpreserve
+program joyplot, sortpreserve
 
 version 15
  
@@ -37,8 +38,8 @@ version 15
 		[ xtitle(passthru) ytitle(passthru) xlabel(passthru) title(passthru) subtitle(passthru) note(passthru)	     				] ///
 		[ scheme(passthru) name(passthru) aspect(passthru) xsize(passthru) ysize(passthru)											] ///
 		[ NORMalize(str) rescale droplow 		 ] ///  // v1.6 options
-		[ LABOFFset(real 0) OFFset(real 15) ]   // v1.62 options
-		
+		[ LABOFFset(real 0) OFFset(real 0) ]  ///  // v1.62 options
+		[ xline(passthru)  saving(passthru) PEAKs peaksize(real 0.2) ]    // v1.7 options
 		
 	// check dependencies
 	capture findfile colorpalette.ado
@@ -262,6 +263,11 @@ qui {
 	
 	 gen double `ybot`newx'' =  `newx'/ `overlap'  
 	 gen double `ytop`newx'' = `y`newx'' + `ybot`newx''
+	 
+	 if "`peaks'" != "" {
+	 	summ `ytop`newx'', meanonly
+		gen peak`newx' = 1 if `ytop`newx''==r(max)
+	 }
 	
 	}
 	
@@ -273,6 +279,9 @@ qui {
 	foreach x of local lvls {
 		replace `ybot`x'' = `ybot`x'' - `shift'
 		replace `ytop`x'' = `ytop`x'' - `shift'	
+		
+		
+		
 		
 	}	
 	
@@ -302,6 +311,12 @@ qui {
 			local yli `yli' (line `ybot`newx'' `xvar' if `by'==`newx', lp(`ylpattern') lc(`ylcolor') lw(`ylwidth')) ||
 			
 		}
+		
+		
+		if "`peaks'"!= "" {
+			local mypeaks `mypeaks' (scatter `ytop`newx'' `xvar' if peak`newx'==1 , msym(circle) msize(`peaksize') mcolor(black)) ||
+		
+		}		
 	
 	}
 	
@@ -322,17 +337,16 @@ qui {
 	twoway  		///
 		`yli'		///
 		`mygraph'  	///
+		`mypeaks'     ///
 		(scatter `ypoint' `xpoint', mcolor(none) mlabcolor(`ylabcolor') mlabel(`by') mlabsize(`ylabsize') ) ///
 		, ///
 			`xlabel' xscale(range(`x1' `x2')) `xreverse' ///
 			ylabel(, nolabels noticks nogrid) yscale(noline) ///
 				legend(off) ///
-				`title' `subtitle' `xtitle' `ytitle' `note' ///
-				`aspect' `xsize' `ysize' `scheme' `name' 
-
-				* note(`note1' `note2', `noptions') ///
+				`title' `subtitle' `xtitle' `ytitle' `note' `xline' ///
+				`aspect' `xsize' `ysize' `scheme' `name' `saving'
 				
-restore			
+	restore			
 	}
 }
 
@@ -359,7 +373,7 @@ preserve
 			count if counts < 10 & tag==1
 			di as error "Groups with errors:"
 			noi list `by' if counts < 10 & tag==1
-			di as error "`r(N)' over group(s) (`by') have fewer than 10 observations. Either clean them manually or use the {it:droplow} option to automatically filter them out."
+			di as error "`r(N)' over group(s) (`by') have fewer than 10 observations. Either clean these manually or use the {it:droplow} option to automatically filter them out."
 			exit
 		}	
 		else {
@@ -514,6 +528,10 @@ preserve
 		 gen double `ybot`newx'' =  `newx' / `overlap'     // if  y`newx'!=.
 		 gen double `ytop`newx'' = y`newx' + `ybot`newx''  // if  y`newx'!=.
 	
+		if "`peaks'"!="" {
+			summ `ytop`newx'', meanonly
+			gen peak`newx' = 1 if `ytop`newx''== r(max)
+		}
 	}
 	
 	
@@ -527,7 +545,8 @@ preserve
 		replace `ytop`x'' = `ytop`x'' - `shift'	
 	}
 	
-
+	
+	
 	
 	levelsof `by', local(lvls)
 	local items = `r(r)'
@@ -558,7 +577,15 @@ preserve
 			
 			local yli `yli' (pci `yvalue' `xrmin' `yvalue' `xrmax', lp(`ylpattern') lc(`ylcolor') lw(`ylwidth')) ||
 		
-		}		
+		}
+		
+		if "`peaks'"!= "" {
+		
+			local mypeaks `mypeaks' (scatter `ytop`newx'' x`newx' if peak`newx'==1 , msym(circle) msize(`peaksize') mcolor(black)) ||
+		
+		}
+		
+		
 	}
 	
 
@@ -574,22 +601,21 @@ preserve
 	
 	
 	twoway  ///
-		`yli'	   ///
-		`mygraph'  ///
+		`yli'	    ///
+		`mygraph'   ///
+		`mypeaks'		///
 		(scatter `ypoint' `xpoint', mcolor(none) mlabcolor(`ylabcolor') mlabel(`by') mlabsize(`ylabsize') ) ///
 		, ///
 			`xlabel' xscale(range(`x1' `x2'))  ///  
 			ylabel(, nolabels noticks nogrid) yscale(noline) ///
 			legend(off) ///
-			`title' `subtitle'  `xtitle' `ytitle' `xrev' `note'  ///
-			`aspect' `xsize' `ysize' `scheme' `name' 
+			`title' `subtitle'  `xtitle' `ytitle' `xrev' `note' `xline'  ///
+			`aspect' `xsize' `ysize' `scheme' `name' `saving'
 		
 		
 	restore			
 	}
-
 }
-
 
 
 end
@@ -599,5 +625,11 @@ end
 *********************************
 ******** END OF PROGRAM *********
 *********************************
+
+
+
+
+
+
 
 
