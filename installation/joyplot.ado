@@ -1,4 +1,4 @@
-*! joyplot v1.62 (28 May 2023)
+*! joyplot v1.7 (14 Jul 2023)
 *! Asjad Naqvi (asjadnaqvi@gmail.com)
 
 * v1.7  (14 Jul 2023): xline(), saving(), peaks, peaksize() options added. ridgeline duplicates joyplot.
