@@ -28,7 +28,7 @@
 cap program drop joyplot
 
 
-program joyplot, sortpreserve
+program joyplot, sortpreserve rclass
 
 version 15
  
