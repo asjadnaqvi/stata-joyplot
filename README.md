@@ -10,8 +10,8 @@
 ---
 
 
-# joyplot v1.7
-(14 Jul 2023)
+# joyplot v1.71
+(03 Oct 2023)
 
 This package provides the ability to draw joyplot or ridgeline plots in Stata. It is based on the [Joyplot Guide](https://medium.com/the-stata-guide/covid-19-visualizations-with-stata-part-8-joy-plots-ridge-line-plots-dbe022e7264d) that I released in October 2020.
 
