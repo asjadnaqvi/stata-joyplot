@@ -20,12 +20,12 @@ This package provides the ability to draw joyplot or ridgeline plots in Stata. I
 
 The package can be installed via SSC or GitHub. The GitHub version, *might* be more recent due to bug fixes, feature updates etc, and *may* contain syntax improvements and changes in *default* values. See version numbers below. Eventually the GitHub version is published on SSC.
 
-The package (**v1.62**) is available on SSC and can be installed as follows:
+The package (**v1.7**) is available on SSC and can be installed as follows:
 ```
 ssc install joyplot, replace
 ```
 
-Or it can be installed from GitHub (**v1.7**):
+Or it can be installed from GitHub (**v1.71**):
 
 ```
 net install joyplot, from("https://raw.githubusercontent.com/asjadnaqvi/stata-joyplot/main/installation/") replace
@@ -59,7 +59,7 @@ graph set window fontface "Arial Narrow"
 
 ## Syntax
 
-The syntax for **v1.7** is as follows:
+The syntax for the latest version is as follows:
 
 ```
 joyplot y [x] [if] [in], by(variable) 
@@ -422,6 +422,9 @@ Please open an [issue](https://github.com/asjadnaqvi/stata-joyplot/issues) to re
 
 
 ## Change log
+
+**v1.71 (03 Oct 2023)**
+- Fixed a bug where locals were passing incorrectly (reported by osnofas).
 
 **v1.7 (14 Jul 2023)**
 - `peaks` and `peaksize()` option added to mark highest point on ridges and modify their size. This option is currently beta.

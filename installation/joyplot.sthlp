@@ -1,7 +1,7 @@
 {smcl}
-{* 14Jul2023}{...}
+{* 03Oct2023}{...}
 {hi:help joyplot/ridgeline}{...}
-{right:{browse "https://github.com/asjadnaqvi/stata-joyplot":joyplot/ridgeline v1.7 (GitHub)}}
+{right:{browse "https://github.com/asjadnaqvi/stata-joyplot":joyplot/ridgeline v1.71 (GitHub)}}
 
 {hline}
 
@@ -123,6 +123,7 @@ See {browse "https://github.com/asjadnaqvi/stata-joyplot":GitHub} for examples.
 
 {title:Version history}
 
+- {bf:1.71}: Fixed a bug where locals were passing incorrectly.
 - {bf:1.7} : Options xline(), saving(), peaks, peaksize() added. The command {cmd:ridgeline} added as mirror for {cmd:joyplot}.
 - {bf:1.62}: Changed over() to by(). Added offset() and laboffset().
 - {bf:1.61}: ylabel in densities fixed. normalize in densities fixed. 
@@ -140,8 +141,8 @@ See {browse "https://github.com/asjadnaqvi/stata-joyplot":GitHub} for examples.
 
 {title:Package details}
 
-Version      : {bf:joyplot} v1.7
-This release : 14 Jul 2023
+Version      : {bf:joyplot} v1.71
+This release : 03 Oct 2023
 First release: 13 Dec 2021
 Repository   : {browse "https://github.com/asjadnaqvi/joyplot":GitHub}
 Keywords     : Stata, graph, joyplot, ridgeline plot

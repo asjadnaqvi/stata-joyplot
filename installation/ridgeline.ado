@@ -1,4 +1,4 @@
-*! ridgeline v1.7 (28 May 2023)
+*! ridgeline v1.71 (28 May 2023)
 *! Asjad Naqvi (asjadnaqvi@gmail.com)
 
 **** joyplot program duplicate

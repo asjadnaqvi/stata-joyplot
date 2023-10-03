@@ -1,7 +1,7 @@
-v 1.7
+v 1.71
 d 'JOYPLOT': A package for creating ridgeline plots
 d
-d Distribution-Date: 20230714
+d Distribution-Date: 20231003
 d
 d Asjad Naqvi
 d asjadnaqvi@gmail.com

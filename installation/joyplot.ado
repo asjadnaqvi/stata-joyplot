@@ -1,6 +1,7 @@
-*! joyplot v1.7 (14 Jul 2023)
+*! joyplot v1.71 (03 Oct 2023)
 *! Asjad Naqvi (asjadnaqvi@gmail.com)
 
+* v1.71 (03 Oct 2023): Fixed a bug in single density joyplots where locals were passing incorrectly.
 * v1.7  (14 Jul 2023): xline(), saving(), peaks, peaksize() options added. ridgeline duplicates joyplot.
 * v1.62 (28 May 2023): change over() to by() to align it with other packages. added offset() and laboffset()
 * v1.61 (01 Mar 2023): ylabel in densities fixed. normalize in densities fixed.
@@ -128,8 +129,7 @@ qui {
 	sort `by' `xvar' 
 	cap drop _fillin
 	fillin `by' `xvar' 
-		
-	*cap drop if _fillin==1
+
 	cap drop _fillin
 	
 	
@@ -361,7 +361,9 @@ if `length' == 1 {
 	
 qui {	
 preserve	
+	
 	keep if `touse'
+	keep `varlist' `by'
 	
 	gen ones = 1
 	bysort `by': egen counts = sum(ones)
@@ -397,20 +399,21 @@ preserve
 	if _rc!=0 {  // if string
 		tempvar over2
 		encode `by', gen(`over2')
-		local over `over2' 
+		local by `over2' 
 	}
 	else {
+			
 		tempvar tempov over2
-		egen   `over2' = group(`by')
+		egen   `over2' = group(`by')   // group the categories
+		
 		
 		if "`: value label `by''" != "" {
 			decode `by', gen(`tempov')		
 			labmask `over2', val(`tempov')
 		}
-		local over `over2' 
+		
+		local by `over2' 
 	}
-	
-	*gen test1 = `over2'
 	
 			
 	if "`yreverse'" != "" {
@@ -615,6 +618,8 @@ preserve
 		
 	restore			
 	}
+
+	
 }
 
 
