@@ -1,7 +1,7 @@
 *! joyplot v1.71 (03 Oct 2023)
 *! Asjad Naqvi (asjadnaqvi@gmail.com)
 
-* v1.71 (03 Oct 2023): Fixed a bug in single density joyplots where locals were passing incorrectly.
+* v1.71 (03 Oct 2023): Fixed a bug in single density joyplots for incorrect locals. Fixed a bugs in lines. Added n() option.
 * v1.7  (14 Jul 2023): xline(), saving(), peaks, peaksize() options added. ridgeline duplicates joyplot.
 * v1.62 (28 May 2023): change over() to by() to align it with other packages. added offset() and laboffset()
 * v1.61 (01 Mar 2023): ylabel in densities fixed. normalize in densities fixed.
@@ -40,7 +40,8 @@ version 15
 		[ scheme(passthru) name(passthru) aspect(passthru) xsize(passthru) ysize(passthru)											] ///
 		[ NORMalize(str) rescale droplow 		 ] ///  // v1.6 options
 		[ LABOFFset(real 0) OFFset(real 0) ]  ///  // v1.62 options
-		[ xline(passthru)  saving(passthru) PEAKs peaksize(real 0.2) ]    // v1.7 options
+		[ xline(passthru)  saving(passthru) PEAKs peaksize(real 0.2) ] ///    // v1.7 options
+		[ n(real 50) ]  // v1.71 options
 		
 	// check dependencies
 	capture findfile colorpalette.ado
@@ -119,7 +120,7 @@ qui {
 	
 	count
 	if r(N) == 0 {
-		di as error "No groups fulfill the criteria for {stata help joyplot:joyplot}."
+		di as error "All observations dropped. No groups fulfill the criteria for {stata help joyplot:joyplot}."
 		exit
 	}
 	
@@ -385,7 +386,7 @@ preserve
 	
 	count
 	if r(N) == 0 {
-		di as error "No groups fulfill the criteria."
+		di as error "All observations dropped. No groups fulfill the criteria for {stata help joyplot:joyplot}."
 		exit
 	}
 	
@@ -455,7 +456,7 @@ preserve
 		summ `by', meanonly
 		local newx = r(max) + 1 - `x'   // reverse the sorting
 
-		kdensity `varlist' if `by'==`x', generate(x`newx' y`newx') bwid(`bwidth') nograph
+		kdensity `varlist' if `by'==`x', generate(x`newx' y`newx') bwid(`bwidth') n(`n') nograph
 		
 		summ y`newx', meanonly
 		if r(max) > `dmax' local dmax = r(max)   // global max
@@ -563,7 +564,7 @@ preserve
 		
 		if "`lines'" != "" {
 			colorpalette `palette', n(`items') nograph `poptions'
-			local mygraph `mygraph' line `ytop`newx'' `x`newx'', lc("`r(p`newx')'") lw(`lwidth') ||
+			local mygraph `mygraph' line `ytop`newx'' x`newx', lc("`r(p`newx')'") lw(`lwidth') ||
 		}
 		else {
 			colorpalette `palette', n(`items') nograph `poptions'
