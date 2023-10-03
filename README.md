@@ -65,7 +65,7 @@ The syntax for the latest version is as follows:
 joyplot y [x] [if] [in], by(variable) 
                 [ overlap(num) bwidth(num) palette(str) alpha(num) offset(num) lines droplow normalize(local|global) 
                    rescale offset(num) laboffset(num) lwidth(num) lcolor(str) ylabsize(num) ylabcolor(str) ylabposition(str)
-                   yline ylcolor(str) ylwidth(str) ylpattern(str) xreverse yreverse peaks peaksize(num)
+                   yline ylcolor(str) ylwidth(str) ylpattern(str) xreverse yreverse peaks peaksize(num) n(num)
                    xtitle(str) ytitle(str) title(str) subtitle(str) xlabel(str)note(str) scheme(str) name(str) saving(str) 
                 ]
 ```
@@ -425,6 +425,9 @@ Please open an [issue](https://github.com/asjadnaqvi/stata-joyplot/issues) to re
 
 **v1.71 (03 Oct 2023)**
 - Fixed a bug where locals were passing incorrectly (reported by osnofas).
+- Fixed a bug for the `lines` option in single density joyplots (reported by osnofas).
+- Added the `n()` option to evalute densities using a higher number of points  (requested by osnofas).
+- Improved the error messages in the help file to better reflect the issues.
 
 **v1.7 (14 Jul 2023)**
 - `peaks` and `peaksize()` option added to mark highest point on ridges and modify their size. This option is currently beta.

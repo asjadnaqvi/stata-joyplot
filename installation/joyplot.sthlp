@@ -18,7 +18,7 @@ The command is based on the following guide on Medium: {browse "https://medium.c
 {cmd:joyplot} {it:y} {it:[x]} {ifin}, {cmd:by}({it:variable}) 
                 {cmd:[} {cmd:overlap}({it:num}) {cmdab:bwid:th}({it:num}) {cmd:palette}({it:str}) {cmd:alpha}({it:num}) {cmdab:off:set}({it:num}) {cmd:lines} {cmd:droplow} {cmdab:norm:alize}({it:local}|{it:global}) 
                    {cmd:rescale} {cmdab:off:set}({it:num}) {cmdab:laboff:set}({it:num}) {cmdab:lw:idth}({it:num}) {cmdab:lc:olor}({it:str}) {cmdab:ylabs:ize}({it:num}) {cmdab:ylabc:olor}({it:str}) {cmdab:ylabpos:ition}({it:str})
-                   {cmdab:yl:ine} {cmdab:ylc:olor}({it:str}) {cmdab:ylw:idth}({it:str}) {cmdab:ylp:attern}({it:str}) {cmdab:xrev:erse} {cmdab:yrev:erse} {cmdab:peak:s} {cmd:peaksize}({it:num})
+                   {cmdab:yl:ine} {cmdab:ylc:olor}({it:str}) {cmdab:ylw:idth}({it:str}) {cmdab:ylp:attern}({it:str}) {cmdab:xrev:erse} {cmdab:yrev:erse} {cmdab:peak:s} {cmd:peaksize}({it:num}) {cmd:n}({it:num})
                    {cmd:xtitle}({it:str}) {cmd:ytitle}({it:str}) {cmd:title}({it:str}) {cmd:subtitle}({it:str}) {cmd:xlabel}({it:str}){cmd:note}({it:str}) {cmd:scheme}({it:str}) {cmd:name}({it:str}) {cmd:saving}({it:str}) 
                 {cmd:]}
 {p 4 4 2}
@@ -92,6 +92,8 @@ For example, {opt offset(-20)} will move the labels left by 20 pixels. Default i
 
 {p2coldent : {opt off:set(num)}}This option is used for extending the range of the x-axis. Default is {opt offset(0)} or 0% of the total width.{p_end}
 
+{p2coldent : {opt n(num)}}Advanced option for increasing the number of observations for generating single density joyplots. Default is {opt n(50)}.{p_end}
+
 {p2coldent : {opt xtitle()}, {opt ytitle()}, {opt xlabel()}}These are standard twoway graph options.{p_end}
 
 {p2coldent : {opt title()}, {opt subtitle()}, {opt note()}}These are standard twoway graph options.{p_end}
@@ -123,7 +125,7 @@ See {browse "https://github.com/asjadnaqvi/stata-joyplot":GitHub} for examples.
 
 {title:Version history}
 
-- {bf:1.71}: Fixed a bug where locals were passing incorrectly.
+- {bf:1.71}: Fixed a bug where locals were passing incorrectly. Fixed a bug in "lines". Added n() option for single density graphs.
 - {bf:1.7} : Options xline(), saving(), peaks, peaksize() added. The command {cmd:ridgeline} added as mirror for {cmd:joyplot}.
 - {bf:1.62}: Changed over() to by(). Added offset() and laboffset().
 - {bf:1.61}: ylabel in densities fixed. normalize in densities fixed. 

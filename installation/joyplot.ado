@@ -38,9 +38,9 @@ version 15
 		[ YLine YLColor(string) YLPattern(string) YLWidth(real 0.04) YREVerse XREVerse 												] ///
 		[ xtitle(passthru) ytitle(passthru) xlabel(passthru) title(passthru) subtitle(passthru) note(passthru)	     				] ///
 		[ scheme(passthru) name(passthru) aspect(passthru) xsize(passthru) ysize(passthru)											] ///
-		[ NORMalize(str) rescale droplow 		 ] ///  // v1.6 options
+		[ NORMalize(str) rescale droplow  ] ///  // v1.6 options
 		[ LABOFFset(real 0) OFFset(real 0) ]  ///  // v1.62 options
-		[ xline(passthru)  saving(passthru) PEAKs peaksize(real 0.2) ] ///    // v1.7 options
+		[ xline(passthru) saving(passthru) PEAKs peaksize(real 0.2) ] ///    // v1.7 options
 		[ n(real 50) ]  // v1.71 options
 		
 	// check dependencies
