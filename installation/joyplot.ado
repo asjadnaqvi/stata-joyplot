@@ -113,7 +113,17 @@ qui {
 			exit
 		}	
 		else {
+			count
+			local obstot = r(N)
+			
+			count if counts < 10
+			local obsdrop = r(N)
+			
 			drop if counts < 10
+			
+			local obsdiff = `obstot' - `obsdrop'
+			di in yellow "Out of `obstot' observations, `obsdrop' dropped. `obsdiff' observations remaining."
+			
 		}
 	}
 	
@@ -376,11 +386,21 @@ preserve
 			count if counts < 10 & tag==1
 			di as error "Groups with errors:"
 			noi list `by' if counts < 10 & tag==1
-			di as error "`r(N)' over group(s) (`by') have fewer than 10 observations. Either clean these manually or use the {it:droplow} option to automatically filter them out."
+			di as error "`r(N)' over group(s) (`by') have fewer than 10 observations. Either clean them manually or use the {it:droplow} option to automatically filter them out."
 			exit
 		}	
 		else {
+			count
+			local obstot = r(N)
+			
+			count if counts < 10
+			local obsdrop = r(N)
+			
 			drop if counts < 10
+			
+			local obsdiff = `obstot' - `obsdrop'
+			noi di in yellow "Out of `obstot' observations, `obsdrop' dropped. `obsdiff' observations remaining."
+			
 		}
 	}
 	
@@ -411,6 +431,11 @@ preserve
 		if "`: value label `by''" != "" {
 			decode `by', gen(`tempov')		
 			labmask `over2', val(`tempov')
+		}
+		else {
+			tempvar bynames
+			gen `bynames' = string(`by')
+			labmask `over2', val(`bynames')
 		}
 		
 		local by `over2' 
