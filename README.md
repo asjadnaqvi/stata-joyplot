@@ -1,6 +1,3 @@
-![joyplot-1](https://github.com/asjadnaqvi/stata-joyplot/assets/38498046/b66818fe-38c7-4cd8-9f6c-cd2f62f3c0f3)
-
-
 ![StataMin](https://img.shields.io/badge/stata-2015-blue) ![issues](https://img.shields.io/github/issues/asjadnaqvi/stata-joyplot) ![license](https://img.shields.io/github/license/asjadnaqvi/stata-joyplot) ![Stars](https://img.shields.io/github/stars/asjadnaqvi/stata-joyplot) ![version](https://img.shields.io/github/v/release/asjadnaqvi/stata-joyplot) ![release](https://img.shields.io/github/release-date/asjadnaqvi/stata-joyplot)
 
 ---
@@ -8,6 +5,8 @@
 [Installation](#Installation) | [Syntax](#Syntax) | [Examples](#Examples) | [Feedback](#Feedback) | [Change log](#Change-log)
 
 ---
+
+![joyplot-1](https://github.com/asjadnaqvi/stata-joyplot/assets/38498046/b66818fe-38c7-4cd8-9f6c-cd2f62f3c0f3)
 
 
 # joyplot v1.71
