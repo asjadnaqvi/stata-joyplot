@@ -1,7 +1,7 @@
-v 1.71
-d 'JOYPLOT': A package for creating ridgeline plots
+v 1.8
+d 'JOYPLOT': A Stata module for ridgeline plots
 d
-d Distribution-Date: 20231003
+d Distribution-Date: 20250107
 d
 d Asjad Naqvi
 d asjadnaqvi@gmail.com

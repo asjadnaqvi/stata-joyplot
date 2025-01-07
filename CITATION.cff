@@ -3,6 +3,6 @@ authors:
 - family-names: "Naqvi"
   given-names: "Asjad"
 title: "Stata package ``joyplot''"
-version: 1.71
-date-released: 2023-10-03
+version: 1.8
+date-released: 2025-01-07
 url: "https://github.com/asjadnaqvi/stata-joyplot"
