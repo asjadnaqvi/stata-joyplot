@@ -454,7 +454,7 @@ Please open an [issue](https://github.com/asjadnaqvi/stata-joyplot/issues) to re
 
 **v1.8 (07 Jan 2025)**
 - Rewrite of base routines to make the code much faster.
-- Users can now specify a variable list. If more than one variable is specified, then the legend is enabled and colors are defined by the variables rather than `by()` groups. New legend options added `legcolumns()`, `legsize()`, `legposition()`. 
+- Users can now specify a variable list rather than just one variable (requested by Yann de Mey). If more than one variable is specified, then the legend is enabled and colors are defined by the variables rather than `by()` groups. New legend options added `legcolumns()`, `legsize()`, `legposition()`. 
 - Time option now requires specifying `time()` option.
 - All `ylab...()` options are now just `lab...()`.
 - Option `peak` has been removed. Instead a new option `mark()` has been added, where `mark(max)` will mark the peaks. Additional options will be added soon. Users can now also display a dropline by specifying the `mark(max, line)` option which looks better than markers. These options are still beta and further enhancements will be added soon including customizing markers and lines.
