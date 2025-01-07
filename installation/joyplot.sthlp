@@ -144,8 +144,8 @@ See {browse "https://github.com/asjadnaqvi/stata-joyplot":GitHub} for examples.
 
 {title:Suggested citation}
 
-See {browse "https://ideas.repec.org/c/boc/bocode/s459061.html"} for official SSC citation. 
-Please note that GitHub version might be newer than the SSC version.
+See {browse "https://ideas.repec.org/c/boc/bocode/s459061.html"} for the official SSC citation. 
+Please note that the GitHub version might be newer than the SSC version.
 
 
 
@@ -157,9 +157,11 @@ First release: 13 Dec 2021
 Repository   : {browse "https://github.com/asjadnaqvi/joyplot":GitHub}
 Keywords     : Stata, graph, joyplot, ridgeline plot
 License      : {browse "https://opensource.org/licenses/MIT":MIT}
+
 Author       : {browse "https://github.com/asjadnaqvi":Asjad Naqvi}
 E-mail       : asjadnaqvi@gmail.com
 Twitter/X    : {browse "https://twitter.com/AsjadNaqvi":@AsjadNaqvi}
+BlueSky      : {browse "https://bsky.app/profile/asjadnaqvi.bsky.social":@asjadnaqvi.bsky.social}
 
 
 {title:Feedback and issues}
