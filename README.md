@@ -461,6 +461,7 @@ Please open an [issue](https://github.com/asjadnaqvi/stata-joyplot/issues) to re
 - `laboffset()` now works correctly.
 - `offset()` that extended the margins has been removed. Instead use the default `plotregion(margin(xxxx))` option to extend the margins.
 - Default scheme is now tableau in line with other packages.
+- Labels are now right aligned on the left axis, and left aligned on the right axis.
 - Several bug fixes, minor enhancements, and improvements to defaults. 
 
 
