@@ -12,7 +12,7 @@
 # joyplot v1.8
 (07 Jan 2025)
 
-This package provides the ability to draw joyplot or ridgeline plots in Stata. It is based on the [Joyplot Guide](https://medium.com/the-stata-guide/covid-19-visualizations-with-stata-part-8-joy-plots-ridge-line-plots-dbe022e7264d) that I released in October 2020.
+This package provides the ability to draw joyplot or ridgeline plots in Stata. It is based on the [Joyplot Guide](https://medium.com/the-stata-guide/covid-19-visualizations-with-stata-part-8-joy-plots-ridge-line-plots-dbe022e7264d) that I wrote in October 2020.
 
 
 ## Installation
@@ -404,9 +404,9 @@ joyplot socMob, by(country) time(year)  ///
 	lc(white) lw(0.2) xlabel(1990(5)2020) plotregion(margin(l+8))
 ```
 
-Get rid of the overlaps. Here `overlap(1)` gives each country it's own box:
-
 <img src="/figures/joyplot_rescale_0.png" width="100%">
+
+Get rid of the overlaps. Here `overlap(1)` gives each country it's own box:
 
 ```stata
 joyplot socMob, by(country) time(year)  overlap(1) rescale  ///
